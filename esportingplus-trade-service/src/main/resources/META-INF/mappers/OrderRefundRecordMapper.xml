@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.trade.data.repository.OrderRefundRecordRepositry">
+  <resultMap id="OrderRefundRecordMap" type="com.kaihei.esportingplus.trade.domain.entity.OrderRefundRecord">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+    <result column="order_sequence"  jdbcType="CHAR" property="orderSequence"/>
+    <result column="refund_sequence"  jdbcType="CHAR" property="refundSequence"/>
+    <result column="refund_fee"  jdbcType="INTEGER" property="refundFee"/>
+    <result column="appid"  jdbcType="VARCHAR" property="appid"/>
+    <result column="channel_tag"  jdbcType="VARCHAR" property="channelTag"/>
+    <result column="reason"  jdbcType="VARCHAR" property="reason"/>
+    <result column="gmt_create"  jdbcType="TIMESTAMP" property="gmtCreate"/>
+    <result column="gmt_modified"  jdbcType="TIMESTAMP" property="gmtModified"/>
+  </resultMap>
+
+  <sql id="OrderRefundRecordColumns">
+        orr.id,
+        orr.order_id,
+        orr.order_sequence,
+        orr.refund_sequence,
+        orr.refund_fee,
+        orr.appid,
+        orr.channel_tag,
+        orr.reason,
+        orr.gmt_create,
+        orr.gmt_modified
+    </sql>
+
+  <select id="getByOrderId" resultMap="OrderRefundRecordMap">
+    select <include refid="OrderRefundRecordColumns" />
+    from trade_order_refund_record orr
+    where orr.order_id = #{orderId}
+  </select>
+</mapper>

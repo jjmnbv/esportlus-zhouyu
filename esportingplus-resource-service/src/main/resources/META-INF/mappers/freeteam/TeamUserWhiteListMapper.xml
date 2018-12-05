@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.teamtype.TeamUserWhiteListRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.freeteam.TeamUserWhiteList">
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <id column="id" property="teamUserWhiteListId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="uid" property="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="gmt_create" property="gmtCreate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <result column="gmt_modified" property="gmtModified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="teamUserWhiteListVO" type="com.kaihei.esportingplus.api.vo.freeteam.TeamUserWhiteListVO">
+      <id column="id" property="teamUserWhiteListId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="uid" property="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <result column="gmt_create" property="gmtCreate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <insert id="addBatchUserWhiteList">
+    REPLACE INTO team_user_white_list
+    (uid) VALUES
+            <foreach collection="list" item="uid" separator=",">
+                (#{uid})
+            </foreach>
+  </insert>
+
+  <select id="selectUserWhiteListByUid" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT id, uid, gmt_create, gmt_modified
+    FROM team_user_white_list
+    WHERE uid = #{uid}
+  </select>
+
+  <select id="selectAllUserWhiteList" resultMap="teamUserWhiteListVO">
+    SELECT id, uid, gmt_create
+    FROM team_user_white_list
+  </select>
+
+</mapper>

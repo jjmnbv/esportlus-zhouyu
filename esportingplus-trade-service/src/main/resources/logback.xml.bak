@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--该日志将日志级别不同的log信息保存到不同的文件中 -->
+<!--
+  scan:
+    当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true。
+  scanPeriod:
+    设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+  debug:
+    当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+-->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+  <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+  <springProperty scope="context" name="appName" source="spring.application.name" />
+  <springProperty scope="context" name="fwkLv" source="log.level.fwk"/>
+  <springProperty scope="context" name="businessLv" source="log.level.business"/>
+  <springProperty scope="context" name="rootLv" source="log.level.root"/>
+  <springProperty scope="context" name="location" source="log.location"/>
+  <springProperty scope="context" name="logstash" source="logstash.host"/>
+  <springProperty scope="context" name="maxHistory" source="log.maxHistory"/>
+  <springProperty scope="context" name="maxFileSize" source="log.maxFileSize"/>
+  <!--配置规则类的位置-->
+  <conversionRule conversionWord="ip" converterClass="com.kaihei.esportingplus.common.log.IPLogConfig" />
+
+  <!-- 控制台输出 -->
+  <!-- %m输出的信息,%p日志级别,%t线程名,%d日期,%c类的全名,%i索引【从数字0开始递增】,,, -->
+  <!-- appender是configuration的子节点，是负责写日志的组件。 -->
+  <!-- ConsoleAppender：把日志输出到控制台 -->
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr([%ip]) %clr(%-5level) %clr(${PID:- }){magenta} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr([line: %line{12}]){magenta} %clr(:){faint} %m%n
+      </pattern>
+      <!-- 控制台也要使用UTF-8，不要使用GBK，否则会中文乱码 -->
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- RollingFileAppender：滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其他文件 -->
+  <!-- 以下配置：1.先按日期存日志，日期变了，将前一天的日志文件名重命名为XXX%日期%索引，新的日志仍然是demo.log -->
+  <!--             2.如果日期没有发生变化，但是当前日志的文件大小超过1KB时，对当前日志进行分割 重命名-->
+  <appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+      <!--<level>DEBUG</level>-->
+    <!--</filter>-->
+    <!--<filter class="com.kaihei.esportingplus.common.log.SystemLogFilter" />-->
+    <!--<filter class="ch.qos.logback.core.filter.EvaluatorFilter">-->
+      <!--<evaluator> &lt;!&ndash; defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator &ndash;&gt;-->
+        <!--<expression>return event.getMessage().contains("kaihei");</expression>-->
+      <!--</evaluator>-->
+      <!--<OnMismatch>ACCEPT</OnMismatch>-->
+      <!--<OnMatch>DENY</OnMatch>-->
+    <!--</filter>-->
+    <param name="file" value="${location}/${appName}.log"/>
+    <param name="append" value="true"/>
+    <!-- rollingPolicy:当发生滚动时，决定 RollingFileAppender 的行为，涉及文件移动和重命名。 -->
+    <!-- TimeBasedRollingPolicy： 最常用的滚动策略，它根据时间来制定滚动策略，既负责滚动也负责出发滚动 -->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- 活动文件的名字会根据fileNamePattern的值，每隔一段时间改变一次 -->
+      <!-- 文件名：log/demo.2017-12-05.0.log -->
+      <fileNamePattern>${location}/${appName}.%d.%i.log</fileNamePattern>
+      <!-- 每产生一个日志文件，该日志文件的保存期限为30天 -->
+      <maxHistory>${maxHistory}</maxHistory>
+      <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <!-- maxFileSize:这是活动文件的大小，默认值是10MB -->
+        <maxFileSize>${maxFileSize}</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder>
+      <!-- pattern节点，用来设置日志的输入格式 -->
+      <pattern>
+          %d{yyyy-MM-dd HH:mm:ss.SSS} [%ip] %level ${PID:- } ${appName} [%t] %c [line: %line] : %m%n
+      </pattern>
+      <!-- 记录日志的编码:此处设置字符集 - -->
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <!-- Asyn文件输出日志 -->
+  <appender name="AsyncLogFile" class="ch.qos.logback.classic.AsyncAppender">
+    <!--默认情况下，当BlockingQueue还有20%容量，他将丢弃TRACE、DEBUG和INFO级别的event，
+    只保留WARN和ERROR级别的event。为了保持所有的events，设置该值为0。-->
+    <param name="discardingThreshold" value="0"/>
+    <!--BlockingQueue的最大容量，默认情况下，大小为256。-->
+    <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+    <param name="queueSize" value="2048"/>
+    <!-- 添加附加的appender,最多只能添加一个 -->
+    <appender-ref ref="LogFile" />
+  </appender>
+
+  <!-- Asyn输出日志到logstash -->
+  <!--<appender name="AsyncLogstash" class="ch.qos.logback.classic.AsyncAppender">-->
+    <!--&lt;!&ndash;默认情况下，当BlockingQueue还有20%容量，他将丢弃TRACE、DEBUG和INFO级别的event，-->
+    <!--只保留WARN和ERROR级别的event。为了保持所有的events，设置该值为0。&ndash;&gt;-->
+    <!--<param name="discardingThreshold" value="0"/>-->
+    <!--&lt;!&ndash;BlockingQueue的最大容量，默认情况下，大小为256。&ndash;&gt;-->
+    <!--&lt;!&ndash; 更改默认的队列的深度,该值会影响性能.默认值为256 &ndash;&gt;-->
+    <!--<param name="queueSize" value="2048"/>-->
+    <!--&lt;!&ndash; 添加附加的appender,最多只能添加一个 &ndash;&gt;-->
+    <!--<appender-ref ref="Logstash" />-->
+  <!--</appender>-->
+
+  <!--业务日志输出到logstash -->
+  <!--<appender name="Logstash"-->
+    <!--class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+    <!--<destination>192.168.2.222:4567,192.168.2.222:4568,192.168.2.222:4569</destination>-->
+    <!--<filter class="com.kaihei.esportingplus.common.log.LogstashLogFilter" />-->
+    <!--&lt;!&ndash; 日志输出编码 &ndash;&gt;-->
+    <!--<encoder-->
+      <!--class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
+      <!--<providers>-->
+        <!--<timestamp>-->
+          <!--<timeZone>GMT+8</timeZone>-->
+        <!--</timestamp>-->
+        <!--<pattern>-->
+          <!--<pattern>-->
+            <!--{-->
+            <!--"time": "%d{yyyy-MM-dd HH:mm:ss.SSS}",-->
+            <!--"ip": "%ip",-->
+            <!--"level": "%level",-->
+            <!--"pid": "${PID:-}",-->
+            <!--"service": "${appName:-}",-->
+            <!--"thread": "%thread",-->
+            <!--"class": "%logger",-->
+            <!--"line": "%line",-->
+            <!--"message": "%message",-->
+            <!--"trace": "%X{X-B3-TraceId:-}",-->
+            <!--"span": "%X{X-B3-SpanId:-}",-->
+            <!--"exportable": "%X{X-Span-Export:-}"-->
+            <!--}-->
+          <!--</pattern>-->
+        <!--</pattern>-->
+      <!--</providers>-->
+    <!--</encoder>-->
+  <!--</appender>-->
+
+
+  <!-- 控制台输出日志级别 -->
+  <root level="${rootLv}">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="AsyncLogFile" />
+    <!--<appender-ref ref="AsyncLogstash" />-->
+  </root>
+  <!-- 指定项目中某个包，当有日志操作行为时的日志记录级别：会覆盖root的输出级别-->
+  <!--additivity="true"-->
+  <logger name="com.kaihei" level="${businessLv}"/>
+  <logger name="org" level="${fwkLv}"/>
+  <logger name="com" level="${fwkLv}"/>
+  <logger name="springfox" level="${fwkLv}"/>
+  <logger name="druid" level="${fwkLv}"/>
+  <logger name="tk" level="${fwkLv}"/>
+  <logger name="io" level="${fwkLv}"/>
+
+</configuration>

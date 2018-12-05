@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.core.data.repository.UserTagInfoRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.core.domain.entity.UserTagInfo">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="tag_name" jdbcType="VARCHAR" property="tagName"/>
+        <result column="uids" jdbcType="VARCHAR" property="uids"/>
+        <result column="user_number" jdbcType="INTEGER" property="userNumber"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+
+    </resultMap>
+
+    <sql id="BASE_Column_Sql">
+        id,tag_name,uids,user_number,operator,gmt_create,gmt_modified
+  </sql>
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from user_tag_info where id = #{id}
+    </select>
+
+    <insert id="insertTagInfo" parameterType="com.kaihei.esportingplus.core.domain.entity.UserTagInfo" useGeneratedKeys="true" keyProperty="id">
+       INSERT INTO user_tag_info
+       (tag_name,uids,user_number,operator,gmt_create) VALUES
+       (#{tagName},#{uids},#{userNumber},#{operator},now())
+    </insert>
+
+
+    <select id="getTagsList" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from user_tag_info
+        order by gmt_create
+    </select>
+
+    <select id="getTagInfoByTagName" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from user_tag_info
+        where tag_name=#{tagName}
+    </select>
+
+    <update id="updateUserTagInfo" parameterType="com.kaihei.esportingplus.core.domain.entity.UserTagInfo">
+    update user_tag_info
+    set tag_name = #{tagName},
+    uids = #{uids},
+    user_number = #{userNumber},
+    operator = #{operator},
+    gmt_modified=#{gmt_modified}
+    where id = #{id}
+    </update>
+</mapper>

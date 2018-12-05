@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.MembersAuth3Repository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersAuth3">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="platform" jdbcType="VARCHAR" property="platform"/>
+        <result column="identifier" jdbcType="VARCHAR" property="identifier"/>
+        <result column="credential" jdbcType="VARCHAR" property="credential"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="unionid" jdbcType="VARCHAR" property="unionid"/>
+        <result column="package_name" jdbcType="VARCHAR" property="packageName"/>
+    </resultMap>
+
+    <resultMap id="bindList" type="com.kaihei.esportingplus.user.api.vo.BindListVo">
+        <result column="phone" property="phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="wx" property="wx" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="qq" property="qq" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="alipay" property="alipay" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="userUnionidList" type="com.kaihei.esportingplus.user.api.vo.UserBindWxUnionIdVo">
+        <result column="uid" property="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="unionid" property="unionid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getBindList" resultMap="bindList">
+      SELECT
+        u.phone,
+        a.*, (
+            SELECT
+                (
+                    CASE (count(1))
+                    WHEN 0 THEN
+                        ''
+                    ELSE
+                        'bind'
+                    END
+                )
+            FROM
+                members_aliuser ali
+            WHERE
+                ali.uid = #{uid,jdbcType=VARCHAR}
+            AND ali.active = 1
+        ) alipay
+      FROM
+          members_user u,
+          (
+              SELECT
+                  IFNULL(
+                      max(
+                          CASE platform
+                          WHEN 'WX' THEN
+                              'bind'
+                          ELSE
+                              ''
+                          END
+                      ),
+                      ''
+                  ) wx,
+                  IFNULL(
+                      max(
+                          CASE platform
+                          WHEN 'QQ' THEN
+                              'bind'
+                          ELSE
+                              ''
+                          END
+                      ),
+                      ''
+                  ) qq
+              FROM
+                  members_auth3 a
+              WHERE
+                  a.user_id = #{userId,jdbcType=INTEGER}
+          ) a
+      WHERE
+          u.id = #{userId,jdbcType=INTEGER}
+  </select>
+
+    <update id="updatePhoneNumByUserId">
+       update members_auth3
+       set
+          identifier = #{phoneNumber}
+       where user_id = #{userId}
+       and platform = 'PH'
+   </update>
+
+    <select id="getOldPhoneNumberByUserId" resultType="java.lang.String">
+        SELECT
+            identifier
+        FROM
+            members_auth3
+        WHERE
+            user_id = #{userId}
+        AND platform = 'PH'
+    </select>
+
+    <select id="getWxUnionIdByUid" resultMap="userUnionidList">
+        SELECT
+            auth3.unionid,u.uid
+        FROM
+            members_auth3 auth3
+        INNER JOIN members_user u ON (auth3.user_id = u.id)
+        WHERE
+            u.uid in
+            <foreach item="item" index="index" collection="uids" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        AND auth3.platform = 'WX'
+        ORDER BY
+            auth3.id
+    </select>
+</mapper>

@@ -1,2 +1,7 @@
-# esportlus
-speingcloudprojext
+# 工程说明
+* 介绍
+* 目录
+  * [开发规范](./doc/K开发规范文档)
+  * [个人环境搭建](./doc/个人开发环境搭建/readme.md)
+  * [项目部署指导](./doc/项目部署指导/readme.md)
+  

@@ -1,0 +1,19 @@
+#spring \u5916\u90E8\u914D\u7F6E\uFF0C\u653E\u5728\u4E00\u4E2A\u5177\u4F53\u7684\u7269\u7406\u8DEF\u5F84
+#\u542F\u52A8\u53C2\u6570\u6DFB\u52A0
+#--spring.config.location=E:/workspaces/git/esportingplus/esportingplus-config-server/src/main/resources/config-repo/dev/logstash.properties
+
+#\u7B2C\u4E09\u65B9\u6846\u67B6\u65E5\u5FD7\u7EA7\u522B
+log.level.fwk=INFO
+#\u4E1A\u52A1\u65E5\u5FD7\u7EA7\u522B: \u751F\u4EA7\u73AF\u5883\u4F7F\u7528 INFO \u7EA7\u522B
+log.level.business=DEBUG
+#root \u65E5\u5FD7\u7EA7\u522B: \u63A7\u5236\u53F0\u8F93\u51FA
+log.level.root=DEBUG
+#\u6700\u5927\u4FDD\u5B58\u5929\u6570
+log.maxHistory=10
+#\u6BCF\u4E2A\u6D3B\u52A8\u6587\u4EF6\u7684\u5927\u5C0F\uFF0C\u9ED8\u8BA4\u503C\u662F10MB
+log.maxFileSize=100KB
+
+#\u65E5\u5FD7\u5B58\u653E\u8DEF\u5F84
+log.location=d:/logs/baoji_java/esportingplus_logs
+#logstash\u5730\u5740\uFF0C\u683C\u5F0F\uFF1Aip:port
+logstash.host=192.168.2.222:4567,192.168.2.222:4568,192.168.2.222:4569

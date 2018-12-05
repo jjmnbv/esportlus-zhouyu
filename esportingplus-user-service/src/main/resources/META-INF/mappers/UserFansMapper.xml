@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.repository.UserFansResponsitory">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.UserFans">
+        <!--<id column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="fans_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>-->
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="fans_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+
+
+    <select id="fansIn" resultMap="BaseResultMap">
+        select * from user_fans where uid = #{uid}
+        <if test="fans != null">
+            and fans_id in
+            <foreach close=")" collection="fans" index="index" item="item" open="("
+                     separator=",">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

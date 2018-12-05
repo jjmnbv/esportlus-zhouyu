@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.repository.UserFriendResponsitory">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.UserFriend">
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="friend_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+
+    <select id="friends" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from user_friend  where uid = #{uid}
+    union all
+    select * from user_friend  where friend_id = #{uid}
+  </select>
+
+    <select id="friendCount" parameterType="java.lang.String" resultType="java.lang.Long">
+   select count(1) from
+    (select * from user_friend  where uid = #{uid}
+    union all
+    select * from user_friend  where friend_id = #{uid}) t
+  </select>
+
+
+</mapper>

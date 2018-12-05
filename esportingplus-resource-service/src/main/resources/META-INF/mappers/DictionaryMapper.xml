@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.DictionaryMapper">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.Dictionary">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="parent_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="category_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="code" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="order_index" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="value" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+
+  <resultMap id="DictBaseVO" type="com.kaihei.esportingplus.api.vo.DictBaseVO">
+    <id column="id" property="dictId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="code" property="code" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="value" property="value" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="order_index" property="orderIndex" javaType="java.lang.Integer" jdbcType="INTEGER" />
+  </resultMap>
+
+  <select id="selectDictById" parameterType="java.lang.Integer" resultMap="DictBaseVO">
+      SELECT id, name, code, value, order_index
+      FROM dictionary
+      WHERE id = #{dictId}
+  </select>
+
+</mapper>

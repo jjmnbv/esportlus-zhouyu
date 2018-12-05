@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.kaihei.esportingplus.resource.data.repository.DictionaryExpandPropertyMapper">
+  <resultMap id="BaseResultMap"
+    type="com.kaihei.esportingplus.resource.domain.entity.DictionaryExpandProperty">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <arg column="dictionary_id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+      <arg column="remark" javaType="java.lang.String" jdbcType="VARCHAR"/>
+      <arg column="order_index" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+      <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+    </constructor>
+  </resultMap>
+  <select id="selectAllDictionaryExpands"
+    resultType="com.kaihei.esportingplus.resource.domain.entity.DictionaryExpand">
+    select  a.id, a.dictionary_id dictionaryId, a.status, a.name, a.remark, a.order_index orderIndex, b.id propertyValueId, b.property_value `value`
+    from dictionary_expand_property a left  join dictionary_expand_property_value b on a.id = b.property_id
+   order  by a.order_index
+  </select>
+</mapper>

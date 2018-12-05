@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.repository.MembersUserPointRepository">
+
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersUserPoint">
+    <id column="user_id" jdbcType="INTEGER" property="userId"/>
+    <result column="point_amount" jdbcType="INTEGER" property="pointAmount"/>
+    <result column="create_datetime" jdbcType="TIMESTAMP" property="createDatetime"/>
+    <result column="update_datetime" jdbcType="TIMESTAMP" property="updateDatetime"/>
+  </resultMap>
+
+  <insert id="insertOrUpdate"
+    parameterType="com.kaihei.esportingplus.user.domain.entity.MembersUserPoint">
+    insert into members_user_point(user_id,point_amount,update_datetime)
+    values(#{userId},#{pointAmount},now())
+    ON DUPLICATE KEY
+    UPDATE point_amount  = point_amount + #{pointAmount}
+  </insert>
+
+</mapper>

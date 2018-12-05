@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.BannerConfigRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.BannerConfig">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="user_type" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="type" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="position" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="img_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="redirect_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="start_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="is_freezed" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="order_index" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+  <sql id="Base_List_Column">
+    t.id,
+    t.user_type,
+    t.name,
+    t.type,
+    t.position,
+    t.img_url,
+    t.redirect_url,
+    t.start_time,
+    t.end_time,
+    t.is_freezed,
+    t.order_index,
+    t.gmt_create,
+    t.gmt_modified
+  </sql>
+  <select id="selectCarouselBannerConfig" resultMap="BaseResultMap">
+    select <include refid="Base_List_Column"/>
+    from banner_config t
+    where t.user_type=#{userType,jdbcType=TINYINT}
+    <if test="position !=null and position !='' ">and t.position = #{position,jdbcType=VARCHAR}</if>
+    and <![CDATA[ t.start_time <= #{currentDate,jdbcType=TIMESTAMP}  ]]>
+    and <![CDATA[ t.end_time > #{currentDate,jdbcType=TIMESTAMP}  ]]>
+    and t.is_freezed=0
+    order by t.order_index desc limit 0,#{carouseCount}
+  </select>
+
+  <select id="selectBannerConfig" resultMap="BaseResultMap">
+    select <include refid="Base_List_Column"/>
+    from banner_config t where t.user_type=#{userType,jdbcType=TINYINT}
+    <if test="position !=null and position !='' ">and t.position = #{position,jdbcType=VARCHAR}</if>
+    order by t.id desc
+  </select>
+</mapper>

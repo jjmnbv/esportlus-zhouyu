@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.MembersAlbumpictureRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersAlbumpicture">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="picture_path" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="weights" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="verify_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="verify_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    </constructor>
+  </resultMap>
+
+  <select id="selectPicturesByUserId" resultMap="BaseResultMap">
+    SELECT *
+      FROM members_albumpicture
+      WHERE user_id = #{userId,jdbcType=INTEGER}
+    <if test="statusList != null">
+        AND `status` in
+      <foreach close=")" collection="statusList" index="index" item="status" open="("
+               separator=",">
+        #{index}
+      </foreach>
+    </if>
+    <if test="pictureId != null">
+      AND id = #{pictureId,jdbcType=INTEGER};
+    </if>
+  </select>
+  <select id="pictureCountByUserId" resultType="java.lang.Integer">
+    SELECT count(1)
+    FROM members_albumpicture
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    AND `status` in
+    <foreach close=")" collection="statusList" index="index" item="status" open="("
+             separator=",">
+      #{index}
+    </foreach>
+    <if test="pictureId != null">
+      AND id = #{pictureId,jdbcType=INTEGER};
+    </if>
+  </select>
+
+  <update id="updateUserIdWeights">
+    UPDATE members_albumpicture
+    SET weights = weights - 1
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    AND `status` in
+    <foreach close=")" collection="statusList" index="index" item="status" open="("
+             separator=",">
+      #{index}
+    </foreach>
+    AND weights >= #{weights,jdbcType=INTEGER};
+  </update>
+
+  <update id="updateStatusByUserId">
+    UPDATE members_albumpicture
+    SET status = #{status,jdbcType=INTEGER}
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    AND id = #{id,jdbcType=INTEGER};
+  </update>
+</mapper>

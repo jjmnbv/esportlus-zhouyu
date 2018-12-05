@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.ChickenpointTaskConfigRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.ChickenpointTaskConfig">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="title" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="subtitle" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="img_url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="start_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="order_index" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="related_logic" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <sql id="Base_List_Column">
+    t.id,
+    t.title,
+    t.subtitle,
+    t.img_url,
+    t.start_time,
+    t.end_time,
+    t.`status` as `status`,
+    t.order_index,
+    t.related_logic,
+    t.gmt_create,
+    t.gmt_modified
+  </sql>
+
+  <select id="selectEfficientChickpointTaskConfig" resultMap="BaseResultMap">
+    select <include refid="Base_List_Column"/>
+    from chickenpoint_task_config t
+    where <![CDATA[ t.start_time <= #{currentDate,jdbcType=TIMESTAMP}  ]]>
+    and <![CDATA[ t.end_time > #{currentDate,jdbcType=TIMESTAMP}  ]]>
+    and t.status=1
+    order by t.order_index desc
+  </select>
+</mapper>

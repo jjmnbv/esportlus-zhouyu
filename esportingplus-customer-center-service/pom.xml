@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>esportingplus</artifactId>
+    <groupId>com.kaihei.esportingplus</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>esportingplus-customer-center-service</artifactId>
+
+  <name>esportingplus-customer-center-service</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>spring-boot-starter-tomcat</artifactId>
+          <groupId>org.springframework.boot</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-config</artifactId>
+    </dependency>
+
+    <!-- microservice monitor -->
+    <dependency>
+      <groupId>de.codecentric</groupId>
+      <artifactId>spring-boot-admin-starter-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-zipkin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+      <version>${spring-kafka.version}</version>
+    </dependency>
+
+    <!--mybatis -->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>${mybatis-spring.version}</version>
+    </dependency>
+
+    <!--mybatis pagehelper-->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>${pagehelper.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper-spring-boot-starter</artifactId>
+      <version>${pagehelper-spring-boot-starter.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>pagehelper</artifactId>
+          <groupId>com.github.pagehelper</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid-spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-resource-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-marketing-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-common</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-trade-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <!-- API -->
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-customer-center-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-gamingteam-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <!-- API -->
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei</groupId>
+      <artifactId>commons-cache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei</groupId>
+      <artifactId>esportingplus-starter-swagger</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-api-mockito</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-module-junit4</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.mybatis.generator</groupId>
+        <artifactId>mybatis-generator-maven-plugin</artifactId>
+        <version>${mybatis-generator-maven-plugin.version}</version>
+        <configuration>
+          <configurationFile>
+            src/main/resources/generatorConfig.xml
+          </configurationFile>
+          <!-- 是否覆盖 -->
+          <overwrite>true</overwrite>
+          <verbose>true</verbose>
+          <!--第一次设置为 false-->
+          <skip>false</skip>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector-java.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper</artifactId>
+            <version>${tk.mybatis.mapper.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

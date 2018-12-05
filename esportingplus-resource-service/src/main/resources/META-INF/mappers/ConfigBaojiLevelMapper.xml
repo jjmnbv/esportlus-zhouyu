@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.ConfigBaojiLevelRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.ConfigBaojiLevel">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="baoji_level" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="baoji_level_rate" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    </constructor>
+  </resultMap>
+  <select id="selectByBaojiLevel" resultMap="BaseResultMap" >
+    select id,baoji_level,baoji_level_rate from config_baoji_level where baoji_level=#{baojiLevel,jdbcType=TINYINT}
+  </select>
+</mapper>

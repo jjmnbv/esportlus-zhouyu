@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.repository.UserGameRoleRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.UserGameRole">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <constructor>
+            <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <arg column="game_code" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="avatar" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="career_code" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="career_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="zone_big_code" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="zone_small_code" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="zone_big_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="zone_small_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        </constructor>
+    </resultMap>
+    <sql id="BASE_Column_Sql">
+        id,game_code,uid,`name`,avatar,career_code,career_name,zone_big_code,zone_small_code,zone_big_name,zone_small_name,gmt_create,gmt_modified
+    </sql>
+    <select id="selectByUserIdAndGameId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="BASE_Column_Sql" />
+        FROM user_game_role
+        WHERE uid = #{uid,jdbcType=VARCHAR} AND game_code = #{gameCode,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByUserIdAndGameIdWithCondition" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql" />
+        from user_game_role where uid=#{uid,jdbcType=VARCHAR} and game_code=#{gameCode,jdbcType=INTEGER}
+        <if test="conditon !=null and conditon.roleId !=null">
+            and id=#{conditon.roleId,jdbcType=BIGINT}
+        </if>
+        <if test="conditon !=null and conditon.zoneBigCode !=null">
+            and zone_big_code=#{conditon.zoneBigCode,jdbcType=INTEGER}
+        </if>
+        <if test="conditon !=null and conditon.zoneSmallCode !=null">
+            and zone_small_code=#{conditon.zoneSmallCode,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="selectByUserIAndGameCodeAndSmallCodeList" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql" />
+        from user_game_role where uid=#{params.uid,jdbcType=VARCHAR} and
+        game_code=#{params.gameCode,jdbcType=INTEGER}
+        and zone_small_code in
+        <foreach collection="params.zoneSmallList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

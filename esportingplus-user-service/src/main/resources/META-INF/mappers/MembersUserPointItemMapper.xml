@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.repository.MembersUserPointItemRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersUserPointItem">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="BIGINT" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="item_type" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="item_acmount" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="operation_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="instructions" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="slug" javaType="java.lang.String" jdbcType="VARCHAR" />
+    </constructor>
+  </resultMap>
+
+
+  <sql id="BASE_COLUMN_SQL">
+      id,user_id,item_type,item_acmount,operation_user_id,instructions,create_datetime, slug
+  </sql>
+
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_COLUMN_SQL"/>
+    FROM members_user_point_item
+    WHERE user_id = #{userId}
+    ORDER BY id DESC
+  </select>
+
+
+  <select id="selectByTypeAndSlug" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_COLUMN_SQL" />
+    FROM members_user_point_item
+    WHERE slug = #{slug,jdbcType=VARCHAR}
+    AND  item_type = #{itemType,jdbcType=INTEGER}
+  </select>
+
+  <!-- 当日累计获得鸡分信息 -->
+  <select id="selectCountByUserId" resultType="java.lang.Integer">
+    SELECT
+    ifnull(SUM(item_acmount), 0)
+    FROM members_user_point_item
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+    AND (item_type = 1 or item_type = 2)
+    AND date(create_datetime) = curdate()
+  </select>
+</mapper>

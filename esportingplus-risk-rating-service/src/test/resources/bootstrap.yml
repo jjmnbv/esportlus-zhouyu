@@ -1,0 +1,86 @@
+custom:
+  interceptor: true
+spring:
+  jpa:
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  rocketmq:
+    name-server-address: 120.77.146.135:9876
+    producer-group: riskrating_group_test
+  application:
+    name: esportingplus-riskrating-service
+  cloud:
+    config:
+      enabled: false
+      fail-fast: true
+      profile: dev
+      label: dev
+      username: ${security.user.name}
+      password: ${security.user.password}
+      uri: http://127.0.0.1:8888
+  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+    platform: org.hibernate.dialect.H2Dialect
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:esportingplus_riskrating;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+    password:
+    druid:
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      web-stat-filter:
+        enabled: false
+
+security:
+  user:
+    name: admin
+    password: ${GAMINGTEAM_SERVICE_PASSWORD:admin}
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+redis:
+  cluster-model: single
+  nodes: ["\"120.79.211.158:6380\""]
+  password: ""
+  database: 1
+
+snowflake:
+  datacenter:
+    id: 13
+
+swagger2:
+  enable: true
+
+app:
+  rocketmq:
+    transaction-producer-group: riskrating_transaction_group_test
+  shumei:
+    baseurl: http://api.fengkongcloud.com/v2/event
+    accessKey: LOIaF2EviRV0Cd0QaPmR
+#threadpool
+thread:
+  corePoolSize: 300
+  maximumPoolSize: 1000
+  keepAliveTime: 20
+  workQueueSize: 5000
+
+logging:
+  level:
+    RocketmqRemoting: error
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+info:
+  version: 1.0.0
+  formatter-version: v1.0.0
+  app:
+    name: esportingplus riskrating core service
+    description: Risk Rating Service with RESTful API
+  build:
+    timestamp: 2018-08-08

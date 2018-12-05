@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.UserBaoNiangRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.UserBaoNiang">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="game" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="game_picture" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="personal_video" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="section_status" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="status" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="level_status" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="power" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="verify_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="tag_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_dan" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="game_zone" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="section" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="assistant_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="tracking" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+</mapper>

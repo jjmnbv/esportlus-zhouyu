@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.teamtype.TeamSettlementModeRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.freeteam.TeamSettlementMode">
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <result column="id"  property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="team_type_id" property="teamTypeId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="settlement_type_id" property="settlementTypeId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="settlement_number" property="settlementNumber" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <result column="order_index" property="orderIndex" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <result column="gmt_create" property="gmtCreate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <result column="gmt_modified" property="gmtModified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="team_settlement_mode_column">
+    id, team_type_id, settlement_type_id, settlement_number,
+    order_index, status, gmt_create, gmt_modified
+  </sql>
+
+  <select id="selectByTeamTypeId" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+    SELECT <include refid="team_settlement_mode_column" />
+    FROM  team_settlement_mode
+    WHERE team_type_id = #{teamTypeId};
+  </select>
+
+
+  <select id="deleteByTeamTypeId" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+    DELETE FROM team_settlement_mode WHERE team_type_id = #{teamTypeId};
+  </select>
+
+  <select id="updateStatusByTeamTypeId" resultMap="BaseResultMap" >
+    UPDATE team_settlement_mode
+    SET status = #{status}
+    WHERE team_type_id = #{teamTypeId};
+  </select>
+
+</mapper>

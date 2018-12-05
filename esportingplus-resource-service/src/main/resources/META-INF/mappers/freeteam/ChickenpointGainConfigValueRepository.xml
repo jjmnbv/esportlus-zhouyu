@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.teamtype.ChickenpointGainConfigValueRepository">
+  <resultMap
+    id="BaseResultMap"
+    type="com.kaihei.esportingplus.resource.domain.entity.freeteam.ChickenpointGainConfigValue">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="free_team_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_dan_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_result_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="baoji_identity_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="value" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <insert id="batchInsertConfigValues" keyProperty="id" parameterType="java.util.List"
+    useGeneratedKeys="true">
+    INSERT INTO `chickenpoint_gain_config_value` (`free_team_type_id`,
+    `game_dan_id`,`game_result_id`,`baoji_identity_id`,`value`)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.freeTeamTypeId},
+      #{item.gameDanId},#{item.gameResultId},#{item.baojiIdentityId},#{item.value})
+    </foreach>
+  </insert>
+
+
+  <update id="batchUpdateValues" parameterType="java.util.List">
+    update chickenpoint_gain_config_value
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="value =case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when id=#{item.id} then #{item.value}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <delete id="deleteByIds">
+    delete
+    from chickenpoint_gain_config_value
+    where id in
+    <foreach close=")" collection="ids" index="index" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+  <select id="selectPisitiveConfigValues"
+    resultType="com.kaihei.esportingplus.resource.domain.entity.freeteam.ChickenpointGainConfigValue">
+    SELECT
+    game_dan_id gameDanId,
+    `value`
+    FROM
+    chickenpoint_gain_config_value
+    WHERE
+    free_team_type_id = #{freeTeamTypeId}
+    AND baoji_identity_id = #{baojiIdentityId}
+
+    <if test="gameDanIds !=null and !gameDanIds.contains(null)">
+      <trim prefix="AND game_dan_id in">
+        <foreach close=")" collection="gameDanIds" item="danId" open="(" separator=",">
+          #{danId}
+        </foreach>
+      </trim>
+    </if>
+    AND game_result_id = #{positiveGameResultId}
+  </select>
+</mapper>

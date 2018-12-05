@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.gamingteam.data.repository.TeamRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.gamingteam.domain.entity.Team">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <constructor>
+            <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+            <arg column="sequence" javaType="java.lang.String" jdbcType="CHAR" />
+            <arg column="room_num" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="title" javaType="java.lang.String" jdbcType="CHAR" />
+            <arg column="team_type" javaType="java.lang.Byte" jdbcType="TINYINT" />
+            <arg column="play_mode" javaType="java.lang.Byte" jdbcType="TINYINT" />
+            <arg column="settlement_type" javaType="java.lang.Byte" jdbcType="TINYINT" />
+            <arg column="settlement_number" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+            <arg column="original_position_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="actually_position_count" javaType="java.lang.Integer" jdbcType="INTEGER" />
+            <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+            <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+            <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        </constructor>
+    </resultMap>
+
+    <resultMap id="TeamListMap" type="com.kaihei.esportingplus.gamingteam.domain.entity.Team">
+        <id column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="sequence" property="sequence" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="room_num" property="roomNum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="title" property="title" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="team_type" property="teamType" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+        <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+        <result column="original_position_count" property="originalPositionCount" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result column="actually_position_count" property="actuallyPositionCount" javaType="java.lang.Integer"
+                jdbcType="INTEGER"/>
+        <result column="play_mode" property="playMode" javaType="java.lang.Byte" jdbcType="TINYINT" />
+        <result column="settlement_type" property="settlementType" javaType="java.lang.Byte" jdbcType="TINYINT" />
+        <result column="settlement_number" property="settlementNumber" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+        <association property="teamGame" javaType="com.kaihei.esportingplus.gamingteam.domain.entity.TeamGameRPG">
+            <id column="team_game_id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+            <result column="game_code" property="gameCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <result column="assault_name" property="assaultName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="raid_code" property="raidCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <result column="raid_name" property="raidName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="discount_fee" property="discountFee" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <result column="zone_across_code" property="zoneAcrossCode" javaType="java.lang.Integer"
+                    jdbcType="INTEGER"/>
+            <result column="zone_across_name" property="zoneAcrossName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <result column="channel" property="channel" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="redisTeamVO" type="com.kaihei.esportingplus.gamingteam.api.vo.rpg.RPGRedisTeamVO">
+        <result column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="sequence" property="sequence" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="title" property="title" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="room_num" property="roomNum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="game_code" property="gameCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="game_name" property="gameName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="original_position_count" property="originalPositionCount"
+                javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="actually_position_count" property="actuallyPositionCount"
+                javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+        <result column="raid_code" property="raidCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="raid_name" property="raidName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="zone_across_code" property="zoneAcrossCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="zone_across_name" property="zoneAcrossName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="channel" property="channel" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="assault_name" property="assaultName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="original_fee" property="originalFee" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="discount_fee" property="discountFee" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="teamGameResultVO" type="com.kaihei.esportingplus.gamingteam.api.vo.TeamGameResultVO">
+        <result column="title" property="teamTitle" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="game_result" property="gameResultCode" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <resultMap id="teamInfo" type="com.kaihei.esportingplus.gamingteam.api.vo.TeamInfoVO">
+        <result column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+        <result column="sequence" property="sequence" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="title" property="title" javaType="java.lang.String" jdbcType="CHAR"/>
+        <result column="room_num" property="roomNum" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+        <result column="game_result" property="gameResult" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+        <result column="game_code" property="gameCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="game_name" property="gameName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="raid_code" property="raidCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="raid_name" property="raidName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="zone_across_code" property="zoneAcrossCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="zone_across_name" property="zoneAcrossName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="channel" property="channel" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="assault_name" property="assaultName" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="original_position_count" property="originalPositionCount"
+          javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="actually_position_count" property="actuallyPositionCount"
+          javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="original_fee" property="originalFee" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="discount_fee" property="discountFee" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Team_List_Column">
+        t.id,
+        t.sequence,
+        t.room_num,
+        t.title,
+        t.team_type,
+        t.`status`,
+        t.original_position_count,
+        t.actually_position_count,
+        tg.id as team_game_id,
+        tg.game_code,
+        tg.assault_name,
+        tg.raid_code,
+        tg.raid_name,
+        tg.zone_across_code,
+        tg.zone_across_name,
+        tg.discount_fee,
+        tg.channel
+    </sql>
+
+    <select id="selectBySequence" parameterType="java.lang.String" resultMap="redisTeamVO">
+        SELECT
+            t.id                      id,
+            t.sequence                sequence,
+            t.title                   title,
+            t.room_num                room_num,
+            tg.game_code              game_code,
+            tg.game_name              game_name,
+            t.original_position_count original_position_count,
+            t.actually_position_count actually_position_count,
+            t.status                  status,
+            tg.raid_code              raid_code,
+            tg.raid_name              raid_name,
+            tg.zone_across_code       zone_across_code,
+            tg.zone_across_name       zone_across_name,
+            tg.channel                channel,
+            tg.assault_name           assault_name,
+            tg.original_fee           original_fee,
+            tg.discount_fee           discount_fee
+        FROM team t
+        INNER JOIN team_game_rpg tg
+        ON t.id = tg.team_id
+        WHERE t.sequence = #{sequence}
+    </select>
+
+    <select id="selectByTeamId" parameterType="java.lang.Long" resultMap="redisTeamVO">
+        SELECT
+            t.id                      id,
+            t.sequence                sequence,
+            t.title                   title,
+            t.room_num                room_num,
+            tg.game_code              game_code,
+            tg.game_name              game_name,
+            t.original_position_count original_position_count,
+            t.actually_position_count actually_position_count,
+            t.status                  status,
+            tg.raid_code              raid_code,
+            tg.raid_name              raid_name,
+            tg.zone_across_code       zone_across_code,
+            tg.zone_across_name       zone_across_name,
+            tg.channel                channel,
+            tg.assault_name           assault_name,
+            tg.original_fee           original_fee,
+            tg.discount_fee           discount_fee
+        FROM team t
+        INNER JOIN team_game_rpg tg
+        ON t.id = tg.team_id
+        WHERE t.id = #{id}
+    </select>
+
+    <update id="updateTeamStatus" >
+      UPDATE team t
+      SET t.`status` = #{status},
+          t.`gmt_modified` = NOW()
+      WHERE t.`sequence` = #{sequence}
+    </update>
+    <select id="setNames">
+     SET NAMES utf8mb4
+    </select>
+
+    <select id="selectHomePageTeamList" resultMap="TeamListMap">
+        select <include refid="Team_List_Column"/>
+        from team t
+        inner join team_game_rpg tg
+        on t.id = tg.team_id
+        where tg.game_code=#{params.gameCode,jdbcType=INTEGER}
+            <if test=" params.zoneAcrossCode !=null">
+                and tg.zone_across_code=#{params.zoneAcrossCode,jdbcType=INTEGER}
+            </if>
+            <if test=" params.raidCode !=null">
+                and tg.raid_code=#{params.raidCode,jdbcType=INTEGER}
+            </if>
+        and t.status in (0,1)
+        order by t.actually_position_count desc,t.id desc
+    </select>
+
+    <select id="selectHomePageTeamTotal" resultType="java.lang.Long">
+        select count(*)
+        from team t
+        inner join team_game_rpg tg
+        on t.id = tg.team_id
+        where tg.game_code=#{params.gameCode,jdbcType=INTEGER}
+        <if test=" params.zoneAcrossCode !=null">
+            and tg.zone_across_code=#{params.zoneAcrossCode,jdbcType=INTEGER}
+        </if>
+        <if test=" params.raidCode !=null">
+            and tg.raid_code=#{params.raidCode,jdbcType=INTEGER}
+        </if>
+        and t.status in (0,1)
+        order by t.actually_position_count desc,t.id desc
+    </select>
+
+    <select id="selectGameResultBySequence" resultMap="teamGameResultVO">
+        SELECT  t.title title,
+                t.game_result game_result
+        from team t
+        where t.sequence = #{sequence}
+    </select>
+
+
+    <select id="selectTeamInfoBySequence" resultMap="teamInfo">
+        SELECT
+            t.id                      id,
+            t.sequence                sequence,
+            t.title                   title,
+            t.room_num                room_num,
+            t.status                  status,
+            t.game_result             game_result,
+            tg.game_code              game_code,
+            tg.game_name              game_name,
+            tg.raid_code              raid_code,
+            tg.raid_name              raid_name,
+            tg.zone_across_code       zone_across_code,
+            tg.zone_across_name       zone_across_name,
+            tg.channel                channel,
+            tg.assault_name           assault_name,
+            t.original_position_count original_position_count,
+            t.actually_position_count actually_position_count,
+            tg.original_fee           original_fee,
+            tg.discount_fee           discount_fee
+        FROM team t
+            INNER JOIN team_game_rpg tg
+                ON t.id = tg.team_id
+        WHERE t.sequence IN
+              <foreach collection="list" item="teamSequence"  open="(" close=")"  separator=",">
+                #{teamSequence}
+		 	      </foreach>
+    </select>
+
+    <select id="selectPVPFreeTeamsForBackup" resultType="com.kaihei.esportingplus.gamingteam.api.vo.PVPFreeTeamBackupVO" >
+        select team.sequence,team.title,team.settlement_type as settlementType,team.`status`,
+        team.settlement_number as settlementNumber,free.free_team_type_name as freeTeamTypeName,
+        free.game_zone_name as gameZoneName,free.lower_dan_name as lowerDanName,free.upper_dan_name as upperDanName,
+         member.uid,member.username,member.chicken_id as chickenId from
+        team as team inner join team_game_pvp_free free on team.id = free.team_id
+        inner join team_member_pvp_free member on free.team_id = member.team_id
+        where  member.user_identity=#{leaderCode,jdbcType=TINYINT}
+        <if test="params.sequence !=null">and team.sequence = #{params.sequence,jdbcType=CHAR}</if>
+        <if test="params.status !=null">and team.`status` = #{params.status,jdbcType=TINYINT}</if>
+        <if test="params.uid !=null">and member.uid = #{params.uid,jdbcType=VARCHAR}</if>
+        <if test="params.chickenId !=null">and member.user_chicken_id = #{params.chickenId,jdbcType=VARCHAR}</if>
+        <if test="params.startDate !=null">and team.gmt_create &gt;= #{params.startDate,jdbcType=TIMESTAMP}</if>
+        <if test="params.endDate !=null">and <![CDATA[ team.gmt_create < #{params.endDate,jdbcType=TIMESTAMP}  ]]></if>
+    </select>
+</mapper>

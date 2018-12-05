@@ -1,0 +1,1 @@
+package com.kaihei.esportingplus.marketing.data.dto;

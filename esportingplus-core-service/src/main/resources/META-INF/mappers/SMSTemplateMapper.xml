@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.core.data.repository.SMSTemplateRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.core.domain.entity.SmsTemplate">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="template_id" jdbcType="VARCHAR" property="templateId" />
+    <result column="channel" jdbcType="INTEGER" property="channel" />
+    <result column="template" jdbcType="VARCHAR" property="template" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+  <sql id="BASE_Column_Sql">
+            id,template_id,channel,template,name
+  </sql>
+  <select id="selectByTemplateId" resultMap="BaseResultMap">
+    select
+     <include refid="BASE_Column_Sql"/>
+    from tenkan_smstemplate where template_id = #{templateId,jdbcType=INTEGER}
+  </select>
+</mapper>

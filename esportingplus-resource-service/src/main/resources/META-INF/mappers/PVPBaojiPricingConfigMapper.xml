@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.PVPBaojiPricingConfigRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.PVPBaojiPricingConfig">
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <result column="id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="game_id" property="gameId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="boss_game_dan_id" property="bossGameDanId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="baoji_level_id" property="baojiLevelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="baoji_level_code" property="baojiLevelCode" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="original_fee" property="originalFee" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="discount_fee" property="discountFee" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="pricing_type" property="pricingType" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+  </resultMap>
+
+  <sql id="all_column">
+    id, game_id, boss_game_dan_id, baoji_level_id, baoji_level_code,
+    original_fee, discount_fee, pricing_type, status
+  </sql>
+
+  <select id="selectBaojiGameDanIncome" resultMap="BaseResultMap">
+      SELECT boss_game_dan_id, baoji_level_id, baoji_level_code, original_fee, discount_fee
+      FROM baoji_pricing_config_pvp
+      WHERE 1=1
+      <if test="gameId != null"> AND game_id = #{gameId}</if>
+      <if test="bossGameDanIdList != null">
+       AND boss_game_dan_id IN
+        <foreach collection="bossGameDanIdList" open="(" close=")" separator="," item="bossGameDanId">
+          #{bossGameDanId}
+        </foreach>
+      </if>
+      <if test="baojiLevelCodeList != null">
+       AND baoji_level_code IN
+        <foreach collection="baojiLevelCodeList" open="(" close=")" separator="," item="baojiLevelCode">
+          #{baojiLevelCode}
+        </foreach>
+      </if>
+      <if test="pricingType != null"> AND pricing_type = #{pricingType}</if>
+      AND status = #{status}
+  </select>
+</mapper>

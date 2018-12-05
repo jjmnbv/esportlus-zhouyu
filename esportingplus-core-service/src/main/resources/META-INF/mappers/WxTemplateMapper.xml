@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.core.data.repository.WxTemplateRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.core.domain.entity.WxTemplate">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="formid" jdbcType="VARCHAR" property="formId"/>
+        <result column="openid" jdbcType="VARCHAR" property="openId"/>
+        <result column="unionid" jdbcType="VARCHAR" property="unionId"/>
+        <result column="expired_day" jdbcType="VARCHAR" property="expiredDay"/>
+    </resultMap>
+
+    <sql id="BASE_Column_Sql">
+            id,formid,openid,unionid,expired_day
+  </sql>
+    <select id="selectByUnionId" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from tenkan_wxnotifyform where unionid = #{unionid,jdbcType=VARCHAR}
+        ORDER BY expired_day ASC LIMIT 1
+    </select>
+
+    <select id="selectByUnioinIds" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from tenkan_wxnotifyform where unionid in
+        <foreach collection="collection" item="unionid" close=")" open="(" separator=",">
+            #{unionid}
+        </foreach>
+    </select>
+
+    <delete id="deleteByIdBatch" parameterType="java.util.List">
+        delete from tenkan_wxnotifyform where id in
+        <foreach collection="list" item="id" close=")" open="(" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

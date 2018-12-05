@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.customer.center.data.repository.CompaintRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.customer.center.domain.entity.Compaint">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="type" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="biz_order_sequeue" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="sequeue" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+
+  </resultMap>
+
+  <resultMap id="complaintVoResultMap" type="com.kaihei.esportingplus.api.vo.ComplaintListVo">
+      <id column="oid" property="id"></id>
+      <result column="complaintOid" property="complaintOid"></result>
+      <result column="status" property="status"></result>
+      <result column="premadeOrderOid" property="premadeOrderOid"></result>
+      <result column="createTime" property="createTime"></result>
+      <association property="gameType" javaType="com.kaihei.esportingplus.api.vo.GameType">
+          <result column="gameCode" property="code"></result>
+          <result column="gameName" property="name"></result>
+      </association>
+      <association property="beComplaintInfo" javaType="com.kaihei.esportingplus.api.vo.BeComplaintInfo">
+          <result column="beUid" property="beUid"></result>
+          <result column="beUsername" property="beUsername"></result>
+          <result column="beChickenId" property="beChickenId"></result>
+          <result column="baojiLevel" property="baojiLevel"></result>
+      </association>
+      <association property="complaintInfo" javaType="com.kaihei.esportingplus.api.vo.ComplaintInfo">
+          <result column="uid" property="uid"></result>
+          <result column="username" property="username"></result>
+          <result column="chickenId" property="chickenId"></result>
+      </association>
+  </resultMap>
+
+  <resultMap id="studioOrderVoResultMap" type="com.kaihei.esportingplus.api.vo.StudioComplaintListVo">
+      <id column="oid" property="oid"></id>
+      <result column="complaintOid" property="complaintOid"></result>
+      <result column="content" property="content"></result>
+      <result column="status" property="status"></result>
+      <result column="type" property="type"></result>
+      <result column="createTime" property="createTime"></result>
+      <association property="beComplaintInfo" javaType="com.kaihei.esportingplus.api.vo.BeComplaintInfo">
+          <result column="beUid" property="beUid"></result>
+          <result column="beUsername" property="beUsername"></result>
+          <result column="beChickenId" property="beChickenId"></result>
+      </association>
+      <association property="complaintInfo" javaType="com.kaihei.esportingplus.api.vo.ComplaintInfo">
+          <result column="uid" property="uid"></result>
+          <result column="username" property="username"></result>
+          <result column="chickenId" property="chickenId"></result>
+      </association>
+      <collection property="compaintItemPictureVo" ofType="com.kaihei.esportingplus.api.vo.CompaintItemPictureVo">
+          <result column="url" property="pictureUrl"></result>
+      </collection>
+  </resultMap>
+
+  <select id="checkUniqueCompaint" parameterType="String" resultType="Integer">
+    select count(*) from compaint
+    where uid = #{uid} and be_uid = #{beUid}
+  </select>
+
+  <insert id="insertCompint" parameterType="com.kaihei.esportingplus.customer.center.domain.entity.Compaint" useGeneratedKeys="true" keyProperty="id">
+    insert into compaint(`type`,biz_order_sequeue,uid,chicken_id,username,be_uid,be_username,be_chicken_id,baoji_level,
+    game_code,game_name,sequeue,`status`,gmt_create,gmt_modified)
+    values(#{type},#{bizOrderSequeue},#{uid},#{chickenId},#{username},#{beUid},#{beUsername},#{beChickenId},#{baojiLevel},
+    #{gameCode},#{gameName},#{sequeue},#{status},now(),now())
+  </insert>
+
+  <select id="listCompaint" parameterType="com.kaihei.esportingplus.api.params.ComplaintQueryParam" resultMap="complaintVoResultMap">
+      select
+      a.id oid,
+      a.sequeue complaintOid,
+      a.status status,
+      a.biz_order_sequeue premadeOrderOid,
+      a.gmt_create createTime,
+      a.game_code gameCode,
+      a.game_name gameName,
+      a.baoji_level baojiLevel,
+      a.uid uid,
+      a.username username,
+      a.chicken_id chickenId,
+      a.be_uid beUid,
+      a.be_username beUsername,
+      a.be_chicken_id beChickenId
+      from compaint a where 1=1
+      <if test="searchType == 1 and searchText!=null and searchText!=''">
+          and a.biz_order_sequeue rlike #{searchText}
+      </if>
+      <if test="searchType == 2 and searchText!=null and searchText!=''">
+          and a.sequeue rlike #{searchText}
+      </if>
+      <if test="searchType == 3 and searchText!=null and searchText!=''">
+          and (a.uid rlike #{searchText} OR a.be_uid rlike #{searchText})
+      </if>
+      <if test="searchType == 4 and searchText!=null and searchText!=''">
+          and (a.chicken_id rlike #{searchText} OR a.be_chicken_id rlike #{searchText})
+      </if>
+      <if test="startDate != null and startDate != '' ">
+          and DATE_FORMAT(a.gmt_create,'%Y-%m-%d') <![CDATA[ >= ]]> #{startDate}
+      </if>
+      <if test="endDate != null and endDate != '' ">
+          and DATE_FORMAT(a.gmt_create,'%Y-%m-%d') <![CDATA[ <= ]]> #{endDate}
+      </if>
+      <if test="status != 0 and status != null and status != '' ">
+          and a.status = #{status}
+      </if>
+      <if test="baojiLevel!=0 and baojiLevel != null and baojiLevel !='' ">
+          and a.baoji_level = #{baojiLevel}
+      </if>
+      <if test="gameCode!=0 and gameCode != null and gameCode !='' ">
+          and a.game_code = #{gameCode}
+      </if>
+      <if test="orderType != null and orderType !='' ">
+          and a.type = #{orderType}
+      </if>
+    <if test="(status == null || status ==0) and type == 1">
+      and a.status &lt;= 3 and a.gmt_create > FROM_UNIXTIME(#{now}/1000 - 259200)
+    </if>
+    <if test="(status == null || status ==0)  and type == 2">
+      and a.status > 3 or (a.status &lt;= 3 and a.gmt_create &lt;= FROM_UNIXTIME(#{now}/1000 - 259200))
+    </if>
+      <if test="sortField != null and sortField != '' ">
+          order by a.${sortField}
+      </if>
+      <if test="sortType == 0 ">
+          DESC
+      </if>
+  </select>
+
+  <select id="studiolist" parameterType="com.kaihei.esportingplus.api.params.StudioComplainQueryParams" resultMap="studioOrderVoResultMap">
+      select
+      a.id oid,
+      a.sequeue complaintOid,
+      b.`type` `type`,
+      a.`status` `status`,
+      b.content content,
+      c.url url,
+      a.gmt_create createTime,
+      a.uid uid,
+      a.username username,
+      a.chicken_id chickenId,
+      a.be_uid beUid,
+      a.be_username beUsername,
+      a.be_chicken_id beChickenId
+      from compaint a inner join compaint_item b on a.id = b.compaint_id
+      inner join compaint_item_picture c on a.id = c.compaint_id where a.be_uid in
+      <foreach item="uid" index="index" collection="uids" open="(" separator="," close=")">
+        #{uid}
+      </foreach>
+      <if test="startDate!=null and startDate!=''">
+        and a.gmt_create <![CDATA[ >= ]]> #{startDate}
+      </if>
+      <if test="endDate!=null and endDate!=''">
+        and a.gmt_create <![CDATA[ <= ]]> #{endDate}
+      </if>
+      <if test="status != 0 and status != null and status != '' ">
+        and a.status = #{status}
+      </if>
+      order by a.gmt_create
+  </select>
+
+
+  <resultMap id="complaintDetailVoResultMap"
+    type="com.kaihei.esportingplus.api.vo.ComplaintDetailVo">
+    <id column="oid" property="oid"></id>
+    <result column="orderType" property="orderType"/>
+    <result column="complaintOid" property="complaintOid"></result>
+    <result column="status" property="handlerStatus"></result>
+    <result column="premadeOrderOid" property="premadeOrderOid"></result>
+    <result column="createTime" property="complainTime"></result>
+    <association property="gameType" javaType="com.kaihei.esportingplus.api.vo.GameType">
+      <result column="gameCode" property="code"></result>
+      <result column="gameName" property="name"></result>
+    </association>
+    <association property="beComplaintInfo"
+      javaType="com.kaihei.esportingplus.api.vo.BeComplaintInfo">
+      <result column="beUid" property="beUid"></result>
+      <result column="beUsername" property="beUsername"></result>
+      <result column="beChickenId" property="beChickenId"></result>
+      <result column="baojiLevel" property="baojiLevel"></result>
+    </association>
+    <association property="complaintInfo" javaType="com.kaihei.esportingplus.api.vo.ComplaintInfo">
+      <result column="uid" property="uid"></result>
+      <result column="username" property="username"></result>
+      <result column="chickenId" property="chickenId"></result>
+    </association>
+  </resultMap>
+  <select id="selectCompaintById" parameterType="java.lang.Integer"
+    resultMap="complaintDetailVoResultMap">
+  select
+      a.id oid,
+      a.type orderType,
+      a.sequeue complaintOid,
+      a.status status,
+      a.biz_order_sequeue premadeOrderOid,
+      a.gmt_create createTime,
+      a.game_code gameCode,
+      a.game_name gameName,
+      a.baoji_level baojiLevel,
+      a.uid uid,
+      a.username username,
+      a.chicken_id chickenId,
+      a.be_uid beUid,
+      a.be_username beUsername,
+      a.be_chicken_id beChickenId
+      from compaint a where a.id = #{oid}
+</select>
+
+  <select id="selectCompaintByOrderSequeues"
+    resultType="com.kaihei.esportingplus.api.vo.ComplaintListVo">
+    select
+    a.id oid,
+    a.type orderType,
+    a.sequeue complaintOid,
+    a.status status,
+    a.biz_order_sequeue premadeOrderOid,
+    a.gmt_create createTime,
+    a.game_code gameCode,
+    a.game_name gameName,
+    a.baoji_level baojiLevel,
+    a.uid uid,
+    a.username username,
+    a.chicken_id chickenId,
+    a.be_uid beUid,
+    a.be_username beUsername,
+    a.be_chicken_id beChickenId
+    from compaint a where a.biz_order_sequeue in
+    <foreach collection="sequeues" item="sequeue" open="(" close=")" separator="," index="index">
+      #{sequeue}
+    </foreach>
+  </select>
+  <select id="selectCountByBeuidAndStatusLte" resultType="java.lang.Integer">
+    select count(1)
+    from compaint a
+    where
+      a.be_uid = #{beUid}
+      and a.status &lt;= #{status}
+  </select>
+</mapper>

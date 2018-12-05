@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.marketing.data.repository.MarketUserInvitStatisticsRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.marketing.domian.entity.MarketUserInvitStatistics">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="invited_amount" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="coin_award_amount" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <update id="incrInvitCountOrAwardCount" parameterType="com.kaihei.esportingplus.marketing.domian.entity.MarketUserInvitStatistics">
+    update market_user_invit_statistics
+    <set>
+      <if test="invitedAmount != null">
+        invited_amount = invited_amount + #{invitedAmount,jdbcType=BIGINT},
+      </if>
+      <if test="coinAwardAmount != null">
+        coin_award_amount = coin_award_amount + #{coinAwardAmount,jdbcType=BIGINT},
+      </if>
+    </set>
+    <where>
+      <trim prefix="" prefixOverrides="and">
+        <if test="id != null">
+          and id = #{id,jdbcType=BIGINT}
+        </if>
+        <if test="userId != null">
+          and user_id = #{userId,jdbcType=BIGINT}
+        </if>
+      </trim>
+    </where>
+
+  </update>
+</mapper>

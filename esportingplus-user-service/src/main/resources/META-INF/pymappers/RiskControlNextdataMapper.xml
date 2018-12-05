@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.RiskControlNextdataRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.RiskControlNextdata">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="device_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="action" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="risk_score" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="risk_level" javaType="java.lang.String" jdbcType="VARCHAR" />
+	  <arg column="risk_detail" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+	  <arg column="source" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+      <arg column="update_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <select id="selectByUidAndDeviceId" resultType="com.kaihei.esportingplus.user.domain.entity.RiskControlNextdata">
+    select id,uid,device_id deviceId,action,risk_score riskScore,risk_level riskLevel,risk_detail riskDetail
+    from risk_control_nextdata where uid=#{uid,jdbcType=VARCHAR} and device_id=#{deviceId,jdbcType=VARCHAR}
+    and action = 2 order by create_datetime desc limit 1;
+  </select>
+
+  <select id="selectByUids" resultType="com.kaihei.esportingplus.user.domain.entity.RiskControlNextdata">
+    SELECT id, uid, device_id deviceId FROM (select * from risk_control_nextdata where action = 2 AND uid in
+    <foreach close=")" collection="uids" index="index" item="uids" open="("
+             separator=",">
+      #{uids}
+    </foreach>
+    group by uid, create_datetime desc) as base
+    GROUP BY uid
+  </select>
+
+
+</mapper>

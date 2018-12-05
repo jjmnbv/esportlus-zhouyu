@@ -1,0 +1,10 @@
+{
+  "code": 0,
+  "data": {
+    "gameResultCode": 1,
+    "gameResultDesc": "失败",
+    "teamSequence": "235855258465730560",
+    "teamTitle": "融云的锅"
+  },
+  "msg": "success"
+}

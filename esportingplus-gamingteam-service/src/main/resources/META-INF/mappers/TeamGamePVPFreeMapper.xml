@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.gamingteam.data.repository.TeamGamePVPFreeRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.gamingteam.domain.entity.TeamGamePVPFree">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="team_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="free_team_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="free_team_type_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="game_zone_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_zone_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="lower_dan_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="lower_dan_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="upper_dan_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="upper_dan_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+</mapper>

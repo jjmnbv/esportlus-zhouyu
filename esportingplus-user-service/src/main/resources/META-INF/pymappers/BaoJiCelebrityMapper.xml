@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.BaoJiCelebrityRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.BaoJiCelebrity">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="baoji_tag" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="cover" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="sound" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="is_sticky" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="sticky_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="verify_status" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="verify_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="verify_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <resultMap id="baoJiCelebrityList" type="com.kaihei.esportingplus.user.api.vo.BaoJiCelebrityVo">
+    <result column="username" javaType="java.lang.String" jdbcType="VARCHAR" property="username" />
+    <result column="uid" javaType="java.lang.String" jdbcType="VARCHAR" property="uid" />
+    <result column="cover" javaType="java.lang.String" jdbcType="VARCHAR" property="cover" />
+    <result column="baoji_tag" javaType="java.lang.Integer" jdbcType="SMALLINT" property="baojiTag" />
+    <result column="desc" javaType="java.lang.String" jdbcType="VARCHAR" property="desc" />
+    <result column="order_count" javaType="java.lang.Integer" jdbcType="INTEGER" property="orderCount" />
+  </resultMap>
+
+  <select id="selectCelebrityList" resultMap="baoJiCelebrityList">
+    SELECT a.*
+      FROM (
+        SELECT c.*,e.order_count,e.last_active_time,e.all_type,e.wzry_type,e.pubg_type,e.cjzc_type
+          FROM baoji_celebrity c,baoji_celebrity_ranking e WHERE c.uid=e.uid AND EXISTS (
+          SELECT * FROM baoji_baoji b
+            WHERE c.uid = CONVERT(b.uid USING utf8)
+              <if test="game != 0">
+                AND b.game = #{game}
+              </if>
+        )
+      UNION
+        SELECT c.*,e.order_count,e.last_active_time,e.all_type,e.wzry_type,e.pubg_type,e.cjzc_type
+          FROM baoji_celebrity c,baoji_celebrity_ranking e WHERE c.uid=e.uid AND EXISTS (
+          SELECT * FROM baoji_baoniang d
+            WHERE c.uid = CONVERT(d.uid USING utf8)
+              <if test="game != 0">
+                AND d.game = #{game}
+              </if>
+        )) a GROUP BY a.id
+    ORDER BY
+    <if test="game == 0 or (game != 1 and game != 3 and game != 4)">
+      a.all_type ASC
+    </if>
+    <if test="game == 1">
+      a.wzry_type ASC
+    </if>
+    <if test="game == 3">
+      a.pubg_type ASC
+    </if>
+    <if test="game == 4">
+      a.cjzc_type ASC
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.trade.data.repository.OrderItemTeamRPGRepository">
+  <resultMap id="OderItermRPGResultMap" type="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamRPG">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="order_id" jdbcType="BIGINT" property="orderId" />
+    <result column="team_sequeue" jdbcType="CHAR" property="teamSequeue" />
+    <result column="team_status" jdbcType="TINYINT" property="teamStatus" />
+    <result column="user_baoji_level" jdbcType="INTEGER" property="userBaojiLevel" />
+    <result column="user_identity" jdbcType="TINYINT" property="userIdentity" />
+    <result column="user_status" jdbcType="TINYINT" property="userStatus" />
+    <result column="game_code" jdbcType="INTEGER" property="gameCode" />
+    <result column="game_name" jdbcType="VARCHAR" property="gameName" />
+    <result column="game_role_id" jdbcType="BIGINT" property="gameRoleId" />
+    <result column="game_role_name" jdbcType="VARCHAR" property="gameRoleName" />
+    <result column="raid_code" jdbcType="INTEGER" property="raidCode" />
+    <result column="raid_name" jdbcType="VARCHAR" property="raidName" />
+    <result column="raid_location_code" jdbcType="INTEGER" property="raidLocationCode" />
+    <result column="raid_location_name" jdbcType="VARCHAR" property="raidLocationName" />
+    <result column="zone_across_code" jdbcType="INTEGER" property="zoneAcrossCode" />
+    <result column="zone_across_name" jdbcType="VARCHAR" property="zoneAcrossName" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+  </resultMap>
+
+  <sql id="OrderBaseColumn">
+    oit.id,
+    oit.uid,
+    oit.order_id,
+    oit.team_sequeue,
+    oit.team_status,
+    oit.user_baoji_level,
+    oit.user_identity,
+    oit.user_status,
+    oit.game_code,
+    oit.game_name,
+    oit.game_role_id,
+    oit.game_role_name,
+    oit.raid_code,
+    oit.raid_name,
+    oit.raid_location_code,
+    oit.raid_location_name,
+    oit.zone_across_code,
+    oit.zone_across_name,
+    oit.price,
+    oit.gmt_create,
+    oit.gmt_modified
+    </sql>
+
+  <select id="getByOrderId" resultMap="OderItermRPGResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order_item_team_rpg oit
+    where oit.order_id = #{orderId}
+  </select>
+
+  <insert id="insertOrderItemTeam" parameterType="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamRPG">
+      insert into esportingplus_trade.trade_order_item_team_rpg(uid,order_id,team_sequeue,user_identity,user_baoji_level,game_code,game_name,
+      game_role_id,game_role_name,raid_code,raid_name,
+      zone_across_code,zone_across_name,price,gmt_create,gmt_modified)
+      values(#{uid},#{orderId},#{teamSequeue},#{userIdentity},#{userBaojiLevel},#{gameCode},#{gameName},#{gameRoleId},#{gameRoleName},
+      #{raidCode},#{raidName},#{zoneAcrossCode},#{zoneAcrossName}, #{price},now(),now())
+  </insert>
+
+  <select id="selectOrderItemTeamByOrderSequeue" parameterType="String" resultType="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamRPG">
+      select uid uid,user_baoji_level userBaojiLevel,game_code gameCode,game_name gameName
+      from trade_order_item_team_rpg where 1=1
+      and order_id = (select id from trade_order where sequeue = #{sequeue})
+      and user_identity = 3
+  </select>
+
+  <select id="selectStudioOrderVoList" parameterType="com.kaihei.esportingplus.trade.api.params.StudioOrderQueryParams" resultType="com.kaihei.esportingplus.trade.api.vo.StudioOrderListVo">
+      select
+      a.id id,
+      a.game_name gameName,
+      a.raid_name raidName,
+      a.zone_across_name zoneAcrossName,
+      a.team_sequeue teamSequeue,
+      a.price price,
+      a.uid userUid,
+      b.status orderStatus,
+      a.gmt_create orderDateCreated,
+      '' teamTitle,
+      0 teamOriginalPrice,
+      '' userNickname,
+      '' userChickenId
+      from trade_order_item_team_rpg a inner join trade_order b on a.order_id = b.id where a.uid in
+      <foreach close=")" collection="uids" index="index" item="uid" open="(" separator=",">
+        #{uid}
+      </foreach>
+      <if test="startDate!=null and startDate!=''">
+        and a.gmt_create <![CDATA[ >= ]]> #{startDate}
+      </if>
+      <if test="endDate!=null and endDate!=''">
+        and a.gmt_create <![CDATA[ <= ]]> #{endDate}
+      </if>
+      <if test="status!=null and status!=''">
+          and b.`status`= #{status}
+      </if>
+      order by a.gmt_create
+  </select>
+  <update id="updateTeamStatusById">
+    update trade_order_item_team_rpg set team_status=#{teamStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="countTeamComplitedBossOrderStatisticsByTeamSequences" resultType="TeamOrderCount">
+    SELECT team_sequeue teamSequeue,COUNT(1) `count` FROM trade_order_item_team_rpg
+    WHERE user_identity = 0 and user_status = 8
+    AND team_sequeue in
+    <foreach close=")" collection="teamSequences" index="index" item="teamSequence" open="(" separator=",">
+      #{teamSequence}
+    </foreach>
+    GROUP BY `team_sequeue`
+  </select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.PaymentBankRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.PaymentBank">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="balance" jdbcType="INTEGER" property="balance" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="bonus" jdbcType="INTEGER" property="bonus" />
+  </resultMap>
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>esportingplus</artifactId>
+    <groupId>com.kaihei.esportingplus</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>esportingplus-backend-system-server</artifactId>
+  <name>esportingplus-backend-system-server</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+    <java.version>1.8</java.version>
+    <alipay-sdk-java.version>3.3.49.ALL</alipay-sdk-java.version>
+    <bcprov-jdk15on.version>1.59</bcprov-jdk15on.version>
+    <!--<springfox-swagger.version>2.8.0</springfox-swagger.version>-->
+    <start-class>com.kaihei.esportingplus.backend.system.BackendSystemServerApplication</start-class>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
+    <timestamp>${maven.build.timestamp}</timestamp>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-eureka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-undertow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.codecentric</groupId>
+      <artifactId>spring-boot-admin-starter-client</artifactId>
+    </dependency>
+    <!--mybatis -->
+    <dependency>
+      <groupId>org.mybatis.spring.boot</groupId>
+      <artifactId>mybatis-spring-boot-starter</artifactId>
+      <version>${mybatis-spring.version}</version>
+    </dependency>
+
+    <!--mybatis pagehelper-->
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>${pagehelper.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei</groupId>
+      <artifactId>spring-boot-starter-rocketmq</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>netty-all</artifactId>
+          <groupId>io.netty</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.kaihei</groupId>
+      <artifactId>commons-cache</artifactId>
+    </dependency>
+    <!-- Swagger2 API -->
+    <dependency>
+      <groupId>com.kaihei</groupId>
+      <artifactId>esportingplus-starter-swagger</artifactId>
+    </dependency>
+
+    <!-- mysql -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>druid-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-common</artifactId>
+      <version>${parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-lang3</artifactId>
+          <groupId>org.apache.commons</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- Test -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>3.0.0</version><!--$NO-MVN-MAN-VER$-->
+        <executions>
+          <execution>
+            <id>timestamp-property</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>timestamp-property</goal>
+            </goals>
+            <configuration>
+              <name>timestamp</name>
+              <pattern>${maven.build.timestamp.format}</pattern>
+              <locale>zh,CN</locale>
+              <timeZone>GMT+8</timeZone>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

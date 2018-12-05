@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.customer.center.data.repository.FeedbackLogRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.customer.center.domain.entity.FeedbackLog">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="display_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="url" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="handle_status" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="phone" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="reply_user_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="reply_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="content" javaType="java.lang.String" jdbcType="LONGVARCHAR" />
+    </constructor>
+  </resultMap>
+
+    <resultMap id="feedbackVo" type="com.kaihei.esportingplus.api.vo.FeedbackVo">
+        <result column="id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="feedback_id" property="feedbackId" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="feedback_user_id" property="feedbackUserId" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="content" property="content" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+        <result column="url" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="create_datetime" property="createDatetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result column="handle_status" property="handleStatus" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+        <result column="phone" property="phone" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id = "selectFeedBackVoList" resultMap="feedbackVo">
+     SELECT
+        l.id,
+        l.display_id feedback_id,
+        l.user_id feedback_user_id,
+        l.content,
+        l.url,
+        l.create_datetime,
+        l.handle_status,
+        l.phone
+    FROM
+        feedback_log l
+    where
+        <![CDATA[   DATE_FORMAT(l.create_datetime, '%Y-%m-%d %H:%i:%s') >= DATE_FORMAT(#{startDate}, '%Y-%m-%d %H:%i:%s') ]]>
+        <![CDATA[ and  DATE_FORMAT(l.create_datetime, '%Y-%m-%d %H:%i:%s') <= DATE_FORMAT(#{endDate}, '%Y-%m-%d %H:%i:%s') ]]>
+        <if test="handleStatus!=2" >
+            and l.handle_status = #{handleStatus}
+        </if>
+        order by l.display_id asc
+  </select>
+</mapper>

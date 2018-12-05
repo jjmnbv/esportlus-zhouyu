@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.gamingteam.data.repository.TeamGameResultRepository">
+  <resultMap id="BaseResultMap"
+    type="com.kaihei.esportingplus.gamingteam.domain.entity.TeamGameResult">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+    <result column="team_id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+    <result column="result_sequence" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    <result column="game_result" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    <result column="screenshot" property="screenshot" javaType="java.lang.String"
+      jdbcType="VARCHAR"/>
+    <result column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+    <result column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+  </resultMap>
+
+  <resultMap id="teamGameResultVO"
+    type="com.kaihei.esportingplus.gamingteam.api.vo.TeamGameResultVO">
+    <result column="team_sequence" property="teamSequence" javaType="java.lang.String"
+      jdbcType="VARCHAR"/>
+    <result column="team_title" property="teamTitle" javaType="java.lang.String"
+      jdbcType="VARCHAR"/>
+    <result column="result_sequence" property="resultSequence" javaType="java.lang.Integer"
+      jdbcType="INTEGER"/>
+    <result column="game_result" property="gameResultCode" javaType="java.lang.Integer"
+      jdbcType="INTEGER"/>
+  </resultMap>
+
+  <sql id="team_game_result_column">
+    id, team_id, result_sequence, game_result, screenshot, gmt_create, gmt_modified
+  </sql>
+
+  <select id="selectByTeamSequence" parameterType="java.lang.String" resultMap="teamGameResultVO">
+
+      SELECT
+        t.sequence        team_sequence,
+        t.title           team_title,
+        r.result_sequence result_sequence,
+        r.game_result     game_result
+      FROM team_game_result r
+        LEFT JOIN team t
+          ON r.team_id = t.id
+      WHERE t.sequence = #{teamSequence}
+
+  </select>
+
+</mapper>

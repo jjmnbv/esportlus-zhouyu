@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.gamingteam.data.repository.TeamMemberRPGRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.gamingteam.domain.entity.TeamMemberRPG">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="team_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="username" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="baoji_level" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_identity" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="avatar" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="join_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="game_role_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="game_role_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="raid_location_code" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="raid_location_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <!-- 投诉订单所需的车队队员简略信息 -->
+  <resultMap id="teamMemberCompaintAdminVO" type="com.kaihei.esportingplus.gamingteam.api.vo.TeamMemberCompaintAdminVO">
+    <result column="uid" property="uid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="user_identity" property="userIdentityCode" javaType="java.lang.Byte" jdbcType="TINYINT" />
+    <result column="baoji_level" property="baojiLevelCode" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+  </resultMap>
+
+  <sql id="columns">
+    <trim suffixOverrides=",">
+      <if test="teamId != null">team_id,</if>
+      <if test="uid != null">uid,</if>
+      <if test="username != null">username,</if>
+      <if test="baojiLevel != null">baoji_level,</if>
+      <if test="userIdentity != null">user_identity,</if>
+      <if test="avatar != null">avatar,</if>
+      <if test="joinTime != null">join_time,</if>
+      <if test="gameRoleId != null">game_role_id,</if>
+      <if test="gameRoleName != null">game_role_name,</if>
+      <if test="raidLocationCode != null">raid_location_code,</if>
+      <if test="raidLocationName != null">raid_location_name,</if>
+      <if test="status != null">`status`,</if>
+      gmt_create,
+      <if test="gmtModified != null">gmt_modified,</if>
+    </trim>
+  </sql>
+
+  <sql id="values">
+    <trim suffixOverrides=",">
+      <if test="teamId != null">team_id = #{teamId},</if>
+      <if test="uid != null">uid = #{uid},</if>
+      <if test="username != null">username = #{username},</if>
+      <if test="baojiLevel != null">baoji_level = #{baojiLevel},</if>
+      <if test="userIdentity != null">user_identity = #{userIdentity},</if>
+      <if test="avatar != null">avatar = #{avatar},</if>
+      <if test="joinTime != null">join_time = #{joinTime},</if>
+      <if test="gameRoleId != null">game_role_id = #{gameRoleId},</if>
+      <if test="gameRoleName != null">game_role_name = #{gameRoleName},</if>
+      <if test="raidLocationCode != null">raid_location_code = #{raidLocationCode},</if>
+      <if test="raidLocationName != null">raid_location_name = #{raidLocationName},</if>
+      <if test="status != null">`status` = #{status},</if>
+      NOW(),
+      <if test="gmtModified != null">gmt_modified,</if>
+    </trim>
+  </sql>
+
+  <insert id="insertMemberList" parameterType="java.util.List" >
+    INSERT INTO esportingplus_gamingteam.team_member
+    (
+    `team_id`,
+    `uid`,
+    `username`,
+    `baoji_level`,
+    `user_identity`,
+    `avatar`,
+    `join_time`,
+    `game_role_id`,
+    `game_role_name`,
+    `raid_location_code`,
+    `raid_location_name`,
+    `status`,
+    `gmt_create`,
+    `gmt_modified`
+    )
+    VALUES
+    <foreach collection="list" item="teamMember" separator=",">
+      (
+      #{teamMember.teamId},
+      #{teamMember.uid},
+      #{teamMember.username},
+      #{teamMember.baojiLevel},
+      #{teamMember.userIdentity},
+      #{teamMember.avatar},
+      #{teamMember.joinTime},
+      #{teamMember.gameRoleId},
+      #{teamMember.gameRoleName},
+      #{teamMember.raidLocationCode},
+      #{teamMember.raidLocationName},
+      #{teamMember.status},
+      #{teamMember.gmtCreate},
+      #{teamMember.gmtModified}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectBriefInfo" parameterType="java.lang.String" resultMap="teamMemberCompaintAdminVO">
+        SELECT  m.uid uid,
+                m.user_identity user_identity,
+                m.baoji_level baoji_level
+        FROM esportingplus_gamingteam.team t
+        INNER JOIN  esportingplus_gamingteam.team_member m
+        ON t.id = m.team_id
+        WHERE t.sequence = #{sequence}
+    </select>
+
+  <select id="getMemberListByTeam" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT  m.team_id team_id,
+                m.uid uid,
+                m.username username,
+                m.baoji_level baoji_level,
+                m.user_identity user_identity,
+                m.avatar avatar,
+                m.join_time join_time,
+                m.game_role_id game_role_id,
+                m.game_role_name game_role_name,
+                m.raid_location_code raid_location_code,
+                m.raid_location_name raid_location_name,
+                m.`status` status,
+                m.gmt_create gmt_create,
+                m.gmt_modified gmt_modified
+        FROM esportingplus_gamingteam.team_member m
+        INNER JOIN  esportingplus_gamingteam.team t
+        ON m.team_id = t.id
+        WHERE t.sequence = #{sequence}
+    </select>
+  <select id="selectBaojiTeamSequencesByUids"
+    resultType="com.kaihei.esportingplus.gamingteam.api.vo.TeamSequenceUidVO">
+    SELECT  a.sequence, b.uid
+    FROM team a LEFT JOIN team_member b ON
+    a.id = b.team_id WHERE b.uid in
+    <foreach close=")" collection="uids" index="index" item="uid" open="("
+      separator=",">
+      #{uid}
+    </foreach> GROUP BY a.sequence
+  </select>
+</mapper>

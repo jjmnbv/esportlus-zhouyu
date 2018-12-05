@@ -1,0 +1,128 @@
+server:
+  port: 9013
+
+spring:
+  application:
+    name: esportingplus-core-service
+  profiles:
+    active: @profile.env@
+  cloud:
+    config:
+      #uri: http://localhost:8888
+      fail-fast: true
+      profile: @profile.env@
+      label: @profile.env@
+      username: ${security.user.name}
+      password: ${security.user.password}
+      retry:
+        initial-interval: 2000
+        max-interval: 10000
+        multiplier: 2
+        max-attempts: 10
+      discovery:
+        #从配置中心读取配置
+        enabled: true
+        serviceId: config-server
+  jackson:
+    time-zone: GMT+8 # 解决 jackson 转换的时候出现的时区问题
+    date-format: yyyy-MM-dd HH:mm:ss # 日期格式化时使用 2018-01-01 23:59:01 的格式
+    property-naming-strategy: SNAKE_CASE # 使用下划线方式格式化字段
+    default-property-inclusion: NON_NULL # 忽略 null值
+  encrypt:
+    private-key: MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJBPl+NVApdSfzV6T8QsDb3Qh85Xy3lFfs+Lod6TZgUgXgLl1DZJmaoB/TlrV6X42hY727mvBbR9rqe/0eXNCKPgAWxFPWjoUpWayAOi7uf9sAWs4M5HiuzzJDx47GjUJ1groSkxNQ1GWOFmFyrYnKyzr3NofB5jHLeu4zyVrZ77AgMBAAECgYEAhXz6lNC3+t3WydMAIghWFbTlSpuvndgI+1bAPrC9+BP+olOSPz1JpRb987U1eFN++H4aO+KINnLjskwfjqBgUjpzxvu/Yu80uOmnLk3vpLFSqUmozeytSX4691MjxtElRpE7KO3nSKOFsrDB1DJfF6DswCLPidFyxDvhWKOwCgECQQDtj7FxAj83RfIidwTgHcp8+O+WGHyaiVOnm7V5hGEutRwMq61ivCvbeswOM+BC9k1KGigtdWdC3km8XJoKOJeBAkEAm4MHdadZtA65Ypw/Sl0Gfg63lFH2L1Pz7+uFrgBVMQd7PhdZu1VJqQkUdokPodcUWs9WVIaBeWUhHzBgQgbUewJAIUW96YESD5DJYBBha25gvO40yEX3tcFEKTaCzVlAL0WIfzHQYALQ9bWWPOsBHv/WRWmydON7qf7uPuaNYJ8agQJBAIBwiAi0X3JHdvXq9psEmggjP5xQ1XPhcugFLjO4MqR7+V4fCw2eM2hZB32fVjnk2frmo/bL4MPSsrh/zAC8g2ECQElLzQhn3wd6AlhVVYDVcHpXM87eVk/NdH95SGXGeWuYRgSeUN2k2i3+Sl0IGBJaCPk6K5bVjWPTnhjPZZTHLoI=
+    charset: UTF-8
+    debug: false
+
+management:
+  security:
+    enabled: false
+
+security:
+  user:
+    name: admin
+    password: ${GAMINGTEAM_SERVICE_PASSWORD:admin}
+
+#info
+info:
+  version: @project.version@
+  formatter-version: v@project.version@
+  app:
+    name: esportingplus core service
+    description: Core Service with RESTful API
+  build:
+    timestamp: @timestamp@
+
+---
+spring:
+  profiles: dev
+
+eureka:
+  instance:
+    #hostname: 127.0.0.1
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: http://${security.user.name}:${security.user.password}@localhost:8761/eureka/
+
+---
+spring:
+  profiles: test
+
+eureka:
+  instance:
+    #hostname: 127.0.0.1
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+#      defaultZone: http://${security.user.name}:${security.user.password}@localhost:8761/eureka/
+---
+spring:
+  profiles: grey
+
+eureka:
+  instance:
+    #hostname: 127.0.0.1
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: grey2
+
+eureka:
+  instance:
+    #hostname: 127.0.0.1
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}
+
+---
+spring:
+  profiles: prod
+
+eureka:
+  instance:
+    #hostname: 127.0.0.1
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: ${eureka.client.service-url.defaultZone}

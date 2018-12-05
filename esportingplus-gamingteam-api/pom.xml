@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>esportingplus</artifactId>
+    <groupId>com.kaihei.esportingplus</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>esportingplus-gamingteam-api</artifactId>
+
+  <name>esportingplus-gamingteam-api</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-feign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-common</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-user-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.kaihei.esportingplus</groupId>
+      <artifactId>esportingplus-trade-api</artifactId>
+      <version>${parent.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}-${project.version}</finalName>
+  </build>
+</project>

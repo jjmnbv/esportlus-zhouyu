@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.trade.data.repository.OrderRepository">
+  <resultMap id="OrderResultMap" type="com.kaihei.esportingplus.trade.domain.entity.Order">
+    <result column="id" jdbcType="BIGINT" property="id" />
+    <result column="outer_trade_no" jdbcType="VARCHAR" property="outerTradeNo" />
+    <result column="uid" jdbcType="VARCHAR" property="uid" />
+    <result column="sequeue" jdbcType="VARCHAR" property="sequeue" />
+    <result column="business_type" jdbcType="TINYINT" property="businessType" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="prepaid_amount" jdbcType="INTEGER" property="prepaidAmount" />
+    <result column="actual_paid_amount" jdbcType="INTEGER" property="actualPaidAmount" />
+    <result column="pre_refund_amount" jdbcType="INTEGER" property="preRefundAmount" />
+    <result column="actual_refund_amount" jdbcType="INTEGER" property="actualRefundAmount" />
+    <result column="discount_amount" jdbcType="INTEGER" property="discountAmount" />
+    <result column="response_time" jdbcType="TIMESTAMP" property="responseTime" />
+    <result column="payment_type" jdbcType="TINYINT" property="paymentType" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="close_time" jdbcType="TIMESTAMP" property="closeTime" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
+    <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified" />
+
+    <association column="id" fetchType="lazy" javaType="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamRPG"
+      property="orderItemTeamRPG" select="com.kaihei.esportingplus.trade.data.repository.OrderItemTeamRPGRepository.getByOrderId">
+    </association>
+
+    <association column="id" fetchType="lazy" javaType="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamPVP"
+      property="orderItemTeamPVP" select="com.kaihei.esportingplus.trade.data.repository.OrderItemTeamPVPRepository.getByOrderId">
+    </association>
+
+    <association column="id" fetchType="lazy" javaType="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamPVPFree"
+      property="orderItemTeamPVPFree" select="com.kaihei.esportingplus.trade.data.repository.OrderItemTeamPVPFreeRepository.getByOrderId">
+    </association>
+
+    <collection column="id" fetchType="lazy" ofType="com.kaihei.esportingplus.trade.domain.entity.OrderRefundRecord"
+      property="orderRefundRecords" select="com.kaihei.esportingplus.trade.data.repository.OrderRefundRecordRepositry.getByOrderId">
+    </collection>
+  </resultMap>
+
+  <sql id="OrderBaseColumn">
+        o.id,
+        o.outer_trade_no,
+        o.uid,
+        o.sequeue,
+        o.business_type,
+        o.status,
+        o.prepaid_amount,
+        o.actual_paid_amount,
+        o.pre_refund_amount,
+        o.actual_refund_amount,
+        o.discount_amount,
+        o.response_time,
+        o.payment_type,
+        o.payment_time,
+        o.close_time,
+        o.cancel_time,
+        o.gmt_create,
+        o.gmt_modified
+    </sql>
+
+  <select id="getBySequenceId" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    where o.sequeue = #{sequenceId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getByTeamSequenceIdAndUids" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=VARCHAR}
+    and oit.uid in
+    <foreach close=")" collection="uids" index="index" item="uid" open="(" separator=",">
+      #{uid}
+    </foreach>
+  </select>
+
+  <select id="getByOuterTradeNo" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    where o.outer_trade_no = #{outerTradeNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getByUidAndTeamSequeue" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where o.uid = #{uid,jdbcType=BIGINT}
+    and oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+  </select>
+
+  <select id="getByTeamSequeue" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+  </select>
+
+  <select id="getLeaveTeamOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and oit.user_status = 6
+    and o.`status` = 4
+  </select>
+
+  <select id="getByCondiction" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where o.uid = #{params.uid,jdbcType=VARCHAR}
+    <if test="params.teamSequeue != null">
+      and oit.team_sequeue = #{params.teamSequeue,jdbcType=CHAR}
+    </if>
+    <if test="params.userIdentity != null">
+      and oit.user_identity = #{params.userIdentity,jdbcType=TINYINT}
+    </if>
+    <if test="params.payStatus != null">
+     and o.status = #{params.payStatus,jdbcType=TINYINT}
+    </if>
+  </select>
+
+  <insert id="insertOrder" keyProperty="id" parameterType="com.kaihei.esportingplus.trade.domain.entity.Order" useGeneratedKeys="true">
+      insert into trade_order(uid,sequeue,business_type,`status`,prepaid_amount,discount_amount,actual_paid_amount,payment_type,gmt_create)
+      values(#{uid},#{sequeue},#{businessType},#{status},#{prepaidAmount},#{discountAmount},#{actualPaidAmount},#{paymentType},now())
+  </insert>
+
+  <select id="selectBossOrderVoList" parameterType="String" resultType="com.kaihei.esportingplus.trade.api.vo.BossOrderVO">
+        SELECT
+        a.`sequeue` sequeue,
+        a.`status` `status`,
+        a.`gmt_create` gmtCreate,
+        b.game_name gameName,
+        b.raid_name raidName,
+        b.zone_across_name zoneAcrossName,
+        CASE WHEN a.actual_refund_amount=0 THEN a.actual_paid_amount - a.pre_refund_amount
+        ELSE a.actual_paid_amount END AS actualPaidAmount
+        FROM trade_order a INNER JOIN trade_order_item_team_rpg b
+        ON a.`id` = b.order_id AND a.uid = b.uid
+        WHERE b.user_identity = '0' and a.business_type = '0' and a.`status` in(3,4) and a.uid = #{userId} ORDER BY a.gmt_create desc
+  </select>
+
+    <select id="selectBaojiOrderVoList" parameterType="String" resultType="com.kaihei.esportingplus.trade.api.vo.BaojiOrderVO">
+        SELECT
+        a.`sequeue` sequeue,
+        a.`status` `status`,
+        a.`gmt_create` gmtCreate,
+        b.game_name gameName,
+        b.raid_name raidName,
+        b.zone_across_name zoneAcrossName,
+        b.price price
+        FROM trade_order a INNER JOIN trade_order_item_team_rpg b
+        ON a.`id` = b.order_id AND a.uid = b.uid
+        WHERE b.user_identity != '0' and a.business_type = '0' and a.`status` in(3,4) and a.uid = #{userId} ORDER BY a.gmt_create desc
+  </select>
+
+  <select id="selectBaojiOrderVoListByUidsAndCreateTime" parameterType="com.kaihei.esportingplus.trade.api.params.StudioUserOrderStatisticsQueryParams" resultType="com.kaihei.esportingplus.trade.api.vo.StudioOrderVo">
+    SELECT
+    a.uid uid,
+    a.`sequeue` sequeue,
+    a.`status` `status`,
+    b.price price
+    FROM trade_order a
+    left join trade_order_item_team_rpg b on a.id = b.order_id
+    WHERE a.business_type = 0 and ( b.user_identity = 1 or  b.user_identity = 3 )
+    <if test="uids !=null">
+      and a.uid in
+      <foreach close=")" collection="uids" index="index" item="uid" open="(" separator=",">
+        #{uid}
+      </foreach>
+    </if>
+    <if test="startDate !=null">and a.gmt_create &gt;= #{startDate}</if>
+    <if test="endDate !=null">and a.gmt_create &lt;= #{endDate}</if>
+    ORDER BY a.gmt_create
+  </select>
+
+  <select id="selectTeamOtherOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.sequeue != #{sequence,jdbcType=CHAR} and oit.team_status=1
+  </select>
+  <select id="selectPVPTeamOtherOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.sequeue != #{sequence,jdbcType=CHAR} and oit.team_status=1
+  </select>
+  <select id="selectPVPFreeTeamOtherOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp_free oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.sequeue != #{sequence,jdbcType=CHAR} and oit.team_status=1
+  </select>
+  <select id="selectLastUserOrder" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_rpg oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.uid = #{uid,jdbcType=BIGINT} order by o.id desc limit 0,1
+  </select>
+
+  <select id="selectRPGBossOrderByTeamSequenceAndUid" resultType="com.kaihei.esportingplus.trade.api.vo.TeamBossOrderVO">
+    select
+  a.id id,
+  a.prepaid_amount prepaidAmount,
+  a.discount_amount discountAmount,
+  a.status,
+  a.sequeue sequeue from trade_order a left join trade_order_item_team_rpg b on a.id = b.order_id
+    where b.team_sequeue = #{teamSequence}
+      and b.uid = #{userId}
+      and a.status in (1, 2, 4)
+  </select>
+
+  <update id="updateSelectiveBySequenceId" parameterType="com.kaihei.esportingplus.trade.domain.entity.Order">
+    update trade_order
+    <set>
+      <if test="order.preRefundAmount != null">
+        pre_refund_amount = #{order.preRefundAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="order.cancelTime != null">
+        cancel_time = #{order.cancelTime,jdbcType=VARCHAR},
+      </if>
+      <if test="order.gmtModified != null">
+        gmt_modified = #{order.gmtModified,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where sequeue = #{order.sequeue,jdbcType=VARCHAR}
+  </update>
+  <select id="selectPVPBossOrderByTeamSequenceAndUid" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o left join trade_order_item_team_pvp oit on o.id = oit.order_id
+    where oit.team_sequeue = #{teamSequence}
+    and oit.uid = #{userId}
+    and o.status in (1, 2, 4) order by o.id desc limit 0,1
+  </select>
+
+  <select id="selectLastPaidPVPUserOrder" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.uid = #{uid,jdbcType=BIGINT} and o.`status`=2 order by o.id desc limit 0,1
+  </select>
+  <select id="selectPVPFreeUserOrder" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp_free oit on oit.order_id = o.id
+    where oit.team_sequeue = #{teamSequeue,jdbcType=CHAR}
+    and o.uid = #{uid,jdbcType=BIGINT}  order by o.id desc limit 0,1
+  </select>
+  <select id="selectPvpBossOrderVoList" parameterType="String" resultType="com.kaihei.esportingplus.trade.api.vo.PVPBossOrderVO">
+    SELECT
+    a.`sequeue` sequeue,
+    a.`status` `status`,
+    a.`gmt_create` gmtCreate,
+    b.game_name gameName,
+    b.game_zone_name gameZoneName,
+    b.game_dan_name gameDanName,
+    b.play_mode playMode,
+    b.settlement_type settlementType,
+    b.settlement_number settlementNumber,
+    CASE WHEN a.actual_refund_amount=0 THEN a.actual_paid_amount - a.pre_refund_amount
+    ELSE a.actual_paid_amount END AS actualPaidAmount
+    FROM trade_order a INNER JOIN trade_order_item_team_pvp b
+    ON a.`id` = b.order_id AND a.uid = b.uid
+    WHERE b.user_identity = 0 and a.business_type = 0 and a.`status` in(3,4) and a.uid = #{userId} ORDER BY a.id desc
+  </select>
+
+  <select id="selectPvpBaojiOrderVoList" parameterType="String" resultType="com.kaihei.esportingplus.trade.api.vo.PVPBaojiOrderVO">
+    SELECT
+    a.`sequeue` sequeue,
+    a.`status` `status`,
+    a.`gmt_create` gmtCreate,
+    b.game_name gameName,
+    b.game_zone_name gameZoneName,
+    b.game_dan_name gameDanName,
+    b.play_mode playMode,
+    b.settlement_type settlementType,
+    b.settlement_number settlementNumber,
+    b.price price
+    FROM trade_order a INNER JOIN trade_order_item_team_pvp b
+    ON a.`id` = b.order_id AND a.uid = b.uid
+    WHERE b.user_identity != 0 and a.business_type = 0 and a.`status` in(3,4) and a.uid = #{userId} ORDER BY a.gmt_create desc
+  </select>
+
+  <select id="getPvpOrderBySequenceId" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    where o.sequeue = #{sequenceId,jdbcType=VARCHAR}
+  </select>
+  <select id="getPvpFreeOrderBySequenceId" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    where o.sequeue = #{sequenceId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPVPFreeBossOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp_free oit on oit.order_id = o.id
+    and o.uid = #{userId,jdbcType=VARCHAR} and oit.user_identity=0
+  </select>
+  <select id="selectPVPFreeBaojiOrders" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp_free oit on oit.order_id = o.id
+    and o.uid = #{userId,jdbcType=VARCHAR} and oit.user_identity!=0
+  </select>
+  <select id="selectPVPFreeBossOrderListForBackGround" resultType="com.kaihei.esportingplus.trade.api.vo.PVPFreeBossOrderForBackGroundVO">
+
+    select distinct o.sequeue as sequence,o.status,oit.uid,oit.team_sequeue teamSequence,oit.user_chicken_id as chickenId,oit.user_nickname as nickname,oit.user_identity as userIdentity,oit.user_baoji_level as userBaojiLevel,oit.free_team_type_name as freeTeamTypeName,
+    oit.gmt_create as gmtCreate,oit.gmt_modified as gmtModified,
+    ( select sum(t3.income)
+    from trade_order_item_team_pvp_free_detail t3
+    where t3.boss_uid = oit.uid and t3.team_sequence = oit.team_sequeue
+    ) amount
+    from trade_order o, trade_order_item_team_pvp_free oit , trade_order_item_team_pvp_free_detail t2
+    where oit.order_id = o.id and oit.team_sequeue = t2.team_sequence and oit.user_identity=0
+    <if test="params.uid !=null">and oit.uid = #{params.uid,jdbcType=VARCHAR}</if>
+    <if test="params.status !=null">and o.`status` = #{params.status,jdbcType=TINYINT}</if>
+    <if test="params.chickenId !=null">and oit.user_chicken_id = #{params.chickenId,jdbcType=VARCHAR}</if>
+    <if test="params.sequence !=null">and o.sequeue = #{params.sequence,jdbcType=VARCHAR}</if>
+    <if test="params.teamSequence !=null">and oit.team_sequeue = #{params.teamSequence,jdbcType=VARCHAR}</if>
+    <if test="params.startDate !=null">and oit.gmt_create &gt;= #{params.startDate,jdbcType=TIMESTAMP}</if>
+    <if test="params.endDate !=null">and <![CDATA[ oit.gmt_create < #{params.endDate,jdbcType=TIMESTAMP}  ]]></if>
+    order by o.id desc
+  </select>
+  <select id="selectPVPFreeBossGiveBaojiIncome" resultType="com.kaihei.esportingplus.trade.api.vo.PVPFreeOrderIncomeForBackGroundVO">
+    select oitp.user_identity as userIdentity,oitp.user_baoji_level as userBaojiLevel,oitp.uid,oitp.user_chicken_id as chickenId,oitp.user_nickname as nickname,detail.income
+    from trade_order o
+    inner join  trade_order_item_team_pvp_free oit on o.id=oit.order_id and oit.user_identity=0
+    inner join trade_order_item_team_pvp_free_detail detail on oit.uid=detail.boss_uid and oit.team_sequeue=detail.team_sequence
+    inner join trade_order_item_team_pvp_free oitp on detail.baoji_uid=oitp.uid and oitp.user_identity!=0 and oitp.team_sequeue=detail.team_sequence
+    where o.sequeue = #{sequence,jdbcType=VARCHAR}
+    order by oitp.id asc
+  </select>
+
+  <select id="selectPVPFreeBaojiOrderListForBackGround" resultMap="OrderResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order o
+    inner join trade_order_item_team_pvp_free oit on oit.order_id = o.id
+    and oit.user_identity!=0
+    <if test="params.uid !=null">and oit.uid = #{params.uid,jdbcType=VARCHAR}</if>
+    <if test="params.status !=null">and o.`status` = #{params.status,jdbcType=TINYINT}</if>
+    <if test="params.chickenId !=null">and oit.user_chicken_id = #{params.chickenId,jdbcType=VARCHAR}</if>
+    <if test="params.sequence !=null">and o.sequeue = #{params.sequence,jdbcType=VARCHAR}</if>
+    <if test="params.teamSequence !=null">and oit.team_sequeue = #{params.teamSequence,jdbcType=VARCHAR}</if>
+    <if test="params.startDate !=null">and o.gmt_create &gt;= #{params.startDate,jdbcType=TIMESTAMP}</if>
+    <if test="params.endDate !=null">and <![CDATA[ o.gmt_create < #{params.endDate,jdbcType=TIMESTAMP}  ]]></if>
+    order by o.id desc
+  </select>
+
+  <select id="selectPVPFreeBaojiFromBossIncome" resultType="com.kaihei.esportingplus.trade.api.vo.PVPFreeOrderIncomeForBackGroundVO">
+    select oitp.user_identity as userIdentity,oitp.user_baoji_level as userBaojiLevel,oitp.uid,oitp.user_chicken_id as chickenId,oitp.user_nickname as nickname,detail.income,o1.status,oitp.gmt_modified as gmtUpdate
+    from trade_order o
+    inner join  trade_order_item_team_pvp_free oit on o.id=oit.order_id and oit.user_identity!=0
+    inner join trade_order_item_team_pvp_free_detail detail on oit.uid=detail.baoji_uid and oit.team_sequeue=detail.team_sequence
+    inner join trade_order_item_team_pvp_free oitp on detail.boss_uid=oitp.uid and oitp.user_identity=0 and oitp.team_sequeue=detail.team_sequence
+    inner join trade_order o1 on oitp.order_id=o1.id
+    where o.sequeue = #{sequence,jdbcType=VARCHAR}
+    order by oitp.id asc
+  </select>
+</mapper>

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.user.data.pyrepository.MembersUserRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersUser">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="password" jdbcType="VARCHAR" property="password"/>
+    <result column="last_login" jdbcType="TIMESTAMP" property="lastLogin"/>
+    <result column="is_superuser" jdbcType="BIT" property="isSuperuser"/>
+    <result column="username" jdbcType="VARCHAR" property="username"/>
+    <result column="first_name" jdbcType="VARCHAR" property="firstName"/>
+    <result column="last_name" jdbcType="VARCHAR" property="lastName"/>
+    <result column="email" jdbcType="VARCHAR" property="email"/>
+    <result column="is_staff" jdbcType="BIT" property="isStaff"/>
+    <result column="is_active" jdbcType="BIT" property="isActive"/>
+    <result column="date_joined" jdbcType="TIMESTAMP" property="dateJoined"/>
+    <result column="uid" jdbcType="VARCHAR" property="uid"/>
+    <result column="phone" jdbcType="VARCHAR" property="phone"/>
+    <result column="thumbnail" jdbcType="VARCHAR" property="thumbnail"/>
+    <result column="sex" jdbcType="SMALLINT" property="sex"/>
+    <result column="desc" jdbcType="VARCHAR" property="desc"/>
+    <result column="region" jdbcType="VARCHAR" property="region"/>
+    <result column="register_way" jdbcType="VARCHAR" property="registerWay"/>
+    <result column="chicken_id" jdbcType="VARCHAR" property="chickenId"/>
+    <result column="age" jdbcType="INTEGER" property="age"/>
+    <result column="constellation" jdbcType="VARCHAR" property="constellation"/>
+    <result column="birthday" jdbcType="DATE" property="birthday"/>
+    <result column="show_group" jdbcType="BIT" property="showGroup"/>
+  </resultMap>
+  <insert id="insertMemberUser"
+    parameterType="com.kaihei.esportingplus.user.domain.entity.MembersUser">
+    <!-- 获取id -->
+    <selectKey keyProperty="id" resultType="INTEGER" order="AFTER">
+      SELECT LAST_INSERT_ID() as id
+    </selectKey>
+    insert into members_user( password, last_login,is_superuser, username,
+    first_name,last_name,email,is_staff,is_active,date_joined,uid,phone,thumbnail,
+    sex,`desc`,region,register_way,chicken_id,age,constellation,birthday,show_group)
+    values( #{password}, #{lastLogin},#{isSuperuser}, #{username},
+    #{firstName},#{lastName},#{email},#{isStaff},#{isActive},#{dateJoined},#{uid},#{phone},#{thumbnail},
+    #{sex},#{desc},#{region},#{registerWay},#{chickenId},#{age},#{constellation},#{birthday},#{showGroup})
+  </insert>
+
+  <sql id="BASE_Column_Sql">
+            id,password, last_login,is_superuser, username,
+            first_name,last_name,email,is_staff,is_active,date_joined,uid,phone,thumbnail,
+            sex,`desc`,region,register_way,chicken_id,age,constellation,birthday,show_group
+  </sql>
+
+  <sql id="Alias_BASE_Column_Sql">
+            u.id,u.password, u.last_login,u.is_superuser, u.username,
+            u.first_name,u.last_name,u.email,u.is_staff,u.is_active,u.date_joined,u.uid,u.phone,u.thumbnail,
+            u.sex,u.`desc`,u.region,u.register_way,u.chicken_id,u.age,u.constellation,u.birthday,u.show_group
+  </sql>
+  <select id="selectByUserId" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_Column_Sql"/>
+    FROM members_user
+    WHERE id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPhone" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_Column_Sql"/>
+    FROM members_user
+    WHERE phone = #{phone,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAllHavingUsedChickenIds" resultType="java.lang.String">
+    SELECT
+    chicken_id
+    FROM members_user limit #{offset},#{limit}
+  </select>
+
+  <select id="selectUserIdByUid" resultType="java.lang.Integer" parameterType="java.lang.String">
+    SELECT
+    id
+    FROM members_user
+    WHERE uid = #{uid}
+  </select>
+
+  <select id="selectUserInfoIdByUid" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="BASE_Column_Sql"/>
+    FROM members_user
+    WHERE uid = #{uid}
+  </select>
+
+  <select id="selectByAuth3Leftjoin" resultMap="BaseResultMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Alias_BASE_Column_Sql"/>
+    FROM members_auth3 a left join members_user u on a.user_id = u.id
+    <where>
+      <trim prefix="" prefixOverrides="and">
+        <if test="unionid != null" >
+          and a.unionid = #{unionid, jdbcType=VARCHAR}
+        </if>
+        <if test="platform != null" >
+          and a.platform = #{platform, jdbcType=VARCHAR}
+        </if>
+      </trim>
+    </where>
+  </select>
+
+    <update id="updateUserPhoneAndSexByUserId">
+        update members_user
+        set
+        <if test="sex != 0">
+            sex = #{sex, jdbcType=INTEGER},
+        </if>
+        <if test="phone != null">
+            phone = #{phone}
+        </if>
+        where id = #{userId, jdbcType=VARCHAR}
+    </update>
+
+    <select id="getUserIdByUserName" resultType="java.lang.Integer" parameterType="java.lang.String">
+    SELECT
+	    id
+    FROM
+	    members_user
+    WHERE
+	    username = #{userName}
+  </select>
+
+  <update id="updateMemberUser" parameterType="com.kaihei.esportingplus.user.domain.entity.MembersUser">
+    UPDATE members_user
+    <set>
+      <if test="username != null">
+        username=#{username},
+      </if>
+      <if test="region != null">
+        region=#{region},
+      </if>
+      <if test="desc != null">
+        `desc`=#{desc},
+      </if>
+      <if test="birthday != null">
+        birthday=#{birthday},
+      </if>
+      <if test="age != null">
+        age=#{age},
+      </if>
+      <if test="showGroup != null">
+        show_group=#{showGroup},
+      </if>
+      <if test="thumbnail != null">
+        thumbnail=#{thumbnail},
+      </if>
+    </set>
+    WHERE uid = #{uid}
+  </update>
+
+  <update id="updateMemberUserById" parameterType="com.kaihei.esportingplus.user.domain.entity.MembersUser">
+    UPDATE members_user
+    <set>
+      <if test="username != null">
+        username=#{username},
+      </if>
+      <if test="region != null">
+        region=#{region},
+      </if>
+      <if test="desc != null">
+        `desc`=#{desc},
+      </if>
+      <if test="birthday != null">
+        birthday=#{birthday},
+      </if>
+      <if test="age != null">
+        age=#{age},
+      </if>
+      <if test="showGroup != null">
+        show_group=#{showGroup},
+      </if>
+      <if test="thumbnail != null">
+        thumbnail=#{thumbnail},
+      </if>
+    </set>
+    WHERE id = #{id}
+  </update>
+  <select id="selectMaxUserId" resultType="java.lang.Integer">
+    SELECT MAX(id) FROM members_user
+  </select>
+</mapper>

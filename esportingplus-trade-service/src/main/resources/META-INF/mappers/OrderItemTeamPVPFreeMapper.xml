@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.trade.data.repository.OrderItemTeamPVPFreeRepository">
+  <resultMap id="OderItermPVPFreeResultMap" type="com.kaihei.esportingplus.trade.domain.entity.OrderItemTeamPVPFree">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="order_id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="team_sequeue" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="team_status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="user_chicken_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="user_nickname" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="avatar" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="user_identity" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="user_baoji_level" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="user_status" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="free_team_type_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="free_team_type_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="game_zone_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_zone_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="game_dan_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="game_dan_name" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="play_mode" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="settlement_type" javaType="java.lang.Byte" jdbcType="TINYINT" />
+      <arg column="settlement_number" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+      <arg column="price" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <sql id="OrderBaseColumn">
+    oit.id,
+    oit.uid,
+    oit.order_id,
+    oit.team_sequeue,
+    oit.team_status,
+    oit.user_chicken_id,
+    oit.user_nickname,
+    oit.avatar,
+    oit.user_identity,
+    oit.user_baoji_level,
+    oit.user_status,
+    oit.free_team_type_id,
+    oit.free_team_type_name,
+    oit.game_zone_id,
+    oit.game_zone_name,
+    oit.game_dan_id,
+    oit.game_dan_name,
+    oit.play_mode,
+    oit.settlement_type,
+    oit.settlement_number,
+    oit.price,
+    oit.gmt_create,
+    oit.gmt_modified
+  </sql>
+
+  <select id="getByOrderId" resultMap="OderItermPVPFreeResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order_item_team_pvp_free oit
+    where oit.order_id = #{orderId}
+  </select>
+
+  <select id="getByTeamSequenceIdAndUids" resultMap="OderItermPVPFreeResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order_item_team_pvp_free oit
+    where oit.team_sequeue = #{teamSequeue,jdbcType=VARCHAR}
+    and oit.uid in
+    <foreach close=")" collection="uids" index="index" item="uid" open="(" separator=",">
+      #{uid}
+    </foreach>
+  </select>
+
+  <select id="getByTeamSequence" resultMap="OderItermPVPFreeResultMap">
+    select <include refid="OrderBaseColumn" />
+    from trade_order_item_team_pvp_free oit
+    where oit.team_sequeue = #{teamSequeue,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateBatch">
+  <foreach collection="items" item="item" index="index" separator=";">
+    UPDATE trade_order_item_team_pvp_free
+    <set>
+      <if test="item.price != null"> `price` = #{item.price,jdbcType=INTEGER}, </if>
+      <if test="item.teamStatus != null"> `team_status` = #{item.teamStatus,jdbcType=TINYINT}</if>
+    </set>
+    WHERE `id` = #{item.id,jdbcType=BIGINT}
+  </foreach>
+</update>
+
+  <update id="update">
+      UPDATE trade_order_item_team_pvp_free
+      <set>
+        <if test="item.price != null"> `price` = #{item.price,jdbcType=INTEGER}, </if>
+        <if test="item.teamStatus != null"> `team_status` = #{item.teamStatus,jdbcType=TINYINT}</if>
+      </set>
+      WHERE `id` = #{item.id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

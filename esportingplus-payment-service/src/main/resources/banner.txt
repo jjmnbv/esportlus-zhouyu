@@ -1,0 +1,6 @@
+        ****************************************************************
+                   Copyright (C) 深圳开黑科技有限公司
+                   Version: ${info.formatter-version}
+                   Build Timestamp: ${info.build.timestamp}
+                   Description: ${info.app.description}
+        ****************************************************************

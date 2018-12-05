@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.customer.center.data.repository.CustomerOrderEvaluateRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.customer.center.domain.entity.CustomerOrderEvaluate">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="star" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="content" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="author_uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="author_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="order_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="order_type" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="baoji_uid" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="relate_source_id" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="relate_soruce_desc" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="baoji_type" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="baoji_level" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="order_finish_time" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="game_round" javaType="java.lang.Short" jdbcType="SMALLINT" />
+      <arg column="game_result" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="is_deleted" javaType="java.lang.Boolean" jdbcType="BIT" />
+      <arg column="delete_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+
+  <select id="selectEvaluateList" parameterType="com.kaihei.esportingplus.api.params.EvaluateQueryParam" resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM customer_order_evaluate where 1=1
+    <if test="authorId != 0">
+      and author_id = #{authorId, jdbcType=INTEGER}
+    </if>
+    <if test="orderId != 0">
+      and order_id = #{orderId, jdbcType=INTEGER}
+    </if>
+    <if test="relateSourceId != null and relateSourceId != ''">
+      and relate_source_id = #{relateSourceId, jdbcType=VARCHAR}
+    </if>
+    <if test="orderType != 0">
+      and order_type = #{orderType,jdbcType=SMALLINT}
+    </if>
+    <if test="baojiUid != null and baojiUid != ''">
+      and baoji_uid = #{baojiUid,jdbcType=VARCHAR}
+    </if>
+    order by create_time desc
+  </select>
+</mapper>

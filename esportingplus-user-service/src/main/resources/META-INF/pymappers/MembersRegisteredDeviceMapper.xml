@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.kaihei.esportingplus.user.data.pyrepository.MembersRegisteredDeviceRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.MembersRegisteredDevice">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
+    <result column="user_agent" jdbcType="VARCHAR" property="userAgent" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="channel" jdbcType="VARCHAR" property="channel" />
+    <result column="rcloud_token" jdbcType="VARCHAR" property="rcloudToken" />
+    <result column="platform" jdbcType="SMALLINT" property="platform" />
+    <result column="login_device_id" jdbcType="VARCHAR" property="loginDeviceId" />
+  </resultMap>
+</mapper>

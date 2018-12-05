@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.marketing.data.repository.MarketUserFreeCouponsRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.marketing.domian.entity.MarketUserFreeCoupons">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+      <arg column="uid" javaType="java.lang.String" jdbcType="CHAR" />
+      <arg column="status" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="invalid_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="update_time" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="source" javaType="java.lang.Integer" jdbcType="TINYINT" />
+      <arg column="type" javaType="java.lang.Integer" jdbcType="TINYINT" />
+    </constructor>
+
+
+  </resultMap>
+
+  <sql id="BASE_COLUMN_SQL">
+      id,uid,status,invalid_time,create_time,update_time,source, type
+  </sql>
+
+  <select id="selectByUid" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_COLUMN_SQL"/>
+    FROM market_user_free_coupons
+    WHERE uid = #{uid}
+    ORDER BY source, invalid_time, id
+  </select>
+
+
+  <delete id="deleteByIds">
+    DELETE
+    FROM market_user_free_coupons
+    WHERE
+     id in
+    <foreach close=")" collection="ids" index="index" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
+<!-- 返回ES中的券 -->
+  <insert id="insertAndUpdate"
+          parameterType="com.kaihei.esportingplus.marketing.domian.entity.MarketUserFreeCoupons">
+    insert into market_user_free_coupons
+    (id, uid,invalid_time,create_time,update_time,source, type)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.id}, #{item.uid}, now(), #{item.createTime},
+      #{item.updateTime}, #{item.source}, #{item.type})
+    </foreach>
+  </insert>
+
+  <!-- 已过期的免费次数券统计 -->
+  <select id="selectListByExpiredCount" resultType="java.lang.Integer">
+    SELECT
+    count(1)
+    FROM market_user_free_coupons
+    WHERE to_days(invalid_time)  &lt; to_days(now())
+    AND source = 1
+    ORDER BY invalid_time, id
+  </select>
+
+  <!-- 已过期的免费次数券 -->
+  <select id="selectListByExpired" resultMap="BaseResultMap">
+    SELECT
+    <include refid="BASE_COLUMN_SQL"/>
+    FROM market_user_free_coupons
+    WHERE to_days(invalid_time)  &lt; to_days(now())
+    AND source = 1
+    ORDER BY invalid_time, id
+  </select>
+
+
+  <!-- 批量插入次数券 -->
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into market_user_free_coupons
+    (uid,invalid_time,create_time,update_time,source, type)
+    values
+    <foreach collection="list" item="item" index="index" separator="," >
+      (#{item.uid},#{item.invalidTime},#{item.createTime},
+      #{item.updateTime},#{item.source},#{item.type})
+    </foreach>
+  </insert>
+
+
+  <!-- 免费次数券统计 -->
+  <select id="selectByUidAndSource" resultType="java.lang.Integer">
+    SELECT
+    count(1)
+    FROM market_user_free_coupons
+    WHERE
+    uid = #{uid}
+    AND source = #{source}
+  </select>
+</mapper>

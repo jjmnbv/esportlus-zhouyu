@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.core.data.repository.AppVersionChangelogRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.core.domain.entity.AppVersionChangelog">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <constructor>
+            <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+            <arg column="client_type" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+            <arg column="version" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="require_version" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="is_forced_update" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="is_recommended_update" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="is_enabled" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="is_deleted" javaType="java.lang.Boolean" jdbcType="BIT"/>
+            <arg column="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="package_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+            <arg column="create_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="update_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="delete_datetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+            <arg column="log_desc" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="VersionLogVoMap" type="com.kaihei.esportingplus.core.api.vo.AppVersionChangelogVo">
+        <result column="id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+        <result column="clientType" property="clientType" javaType="java.lang.Short" jdbcType="SMALLINT"/>
+        <result column="version" property="version" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="requireVersion" property="requireVersion" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="isForcedUpdate" property="isForcedUpdate" javaType="java.lang.Boolean" jdbcType="BIT"/>
+        <result column="isRecommendedUpdate" property="isRecommendedUpdate" javaType="java.lang.Boolean" jdbcType="BIT"/>
+        <result column="isEnabled" property="isEnabled" javaType="java.lang.Boolean" jdbcType="BIT"/>
+        <result column="url" property="url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result column="createDatetime" property="createDatetime" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result column="logDesc" property="logDesc" javaType="java.lang.String" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <select id="judgeIsDeleted" resultType="java.lang.Boolean">
+        select is_deleted from app_version_changelog where id = #{logId,jdbcType=INTEGER}
+    </select>
+
+    <update id="updateVersionLogStatus">
+        update app_version_changelog
+        set
+        <if test="updateType == 1">
+            is_enabled = true,
+            update_datetime = now()
+        </if>
+        <if test="updateType == 2">
+            is_enabled = false,
+            update_datetime = now()
+        </if>
+        <if test="updateType == 3">
+            is_deleted = true,
+            delete_datetime = now()
+        </if>
+        where id = #{logId,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectChangelogVoList" resultMap="VersionLogVoMap">
+        select log.id id,
+               log.client_type clientType,
+               log.version version,
+               log.require_version requireVersion,
+               log.is_forced_update isForcedUpdate,
+               log.is_recommended_update isRecommendedUpdate,
+               log.is_enabled isEnabled,
+               log.url url,
+               log.create_datetime createDatetime,
+               log.log_desc logDesc
+        FROM
+            app_version_changelog log
+        WHERE
+            log.is_deleted = FALSE
+        ORDER BY
+            log.create_datetime DESC
+    </select>
+
+    <select id="queryChangeLogByClientType" resultMap="BaseResultMap">
+        SELECT
+            *
+        FROM
+            app_version_changelog l
+        WHERE
+            l.client_type = #{clientType,jdbcType=SMALLINT}
+        AND l.is_deleted = FALSE
+        AND l.is_enabled = TRUE
+        ORDER BY
+            l.create_datetime DESC
+            limit 1
+    </select>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.kaihei.esportingplus.user.data.pyrepository.PaymentAccountStatementRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.user.domain.entity.PaymentAccountStatement">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="bill_type" jdbcType="SMALLINT" property="billType" />
+    <result column="total_fee" jdbcType="INTEGER" property="totalFee" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="receipt_time" jdbcType="TIMESTAMP" property="receiptTime" />
+  </resultMap>
+</mapper>

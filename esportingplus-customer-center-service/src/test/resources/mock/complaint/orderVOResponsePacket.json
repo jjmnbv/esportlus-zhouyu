@@ -1,0 +1,40 @@
+{
+  "code": 0,
+  "data": {
+    "actualPaidAmount": 0,
+    "actualRefundAmount": 10,
+    "businessType": 0,
+    "cancelTime": 1536399351000,
+    "discountAmount": 0,
+    "gmtCreate": 1536398820000,
+    "gmtModified": 1536399362000,
+    "id": 1,
+    "orderItemTeam": {
+      "gameCode": 88,
+      "gameName": "DNF",
+      "gameRoleId": 184,
+      "gameRoleName": "年少挽剑世无双",
+      "price": 10,
+      "raidCode": 1,
+      "raidLocationCode": 0,
+      "raidLocationName": "",
+      "raidName": "安徒恩（团队）",
+      "teamSequeue": "235855258465730560",
+      "uid": "emkpz62g",
+      "userBaojiLevel": 0,
+      "userIdentity": 0,
+      "zoneAcrossCode": 7,
+      "zoneAcrossName": "跨6"
+    },
+    "outerTradeNo": "4200000192201809087757135128",
+    "paymentTime": 1536398828000,
+    "paymentType": 0,
+    "preRefundAmount": 10,
+    "prepaidAmount": 10,
+    "responseTime": 1536398827000,
+    "sequeue": "20180908172659235855584841433088",
+    "status": 3,
+    "uid": "emkpz62g"
+  },
+  "msg": "success"
+}

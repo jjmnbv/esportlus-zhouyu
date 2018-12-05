@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.kaihei.esportingplus.resource.data.repository.teamtype.TeamTypeRepository">
+  <resultMap id="BaseResultMap"
+    type="com.kaihei.esportingplus.resource.domain.entity.freeteam.TeamType">
+      <!--
+        WARNING - @mbg.generated
+      -->
+      <id column="id" property="teamTypeId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+      <result column="category" property="category" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+      <result column="game_id" property="gameId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="play_mode_id" property="playModeId" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+      <result column="baoji_identity_id" property="baojiIdentityId" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+      <result column="order_index" property="orderIndex" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+      <result column="max_position_count" property="maxPositionCount" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+      <result column="status" property="status" javaType="java.lang.Byte" jdbcType="TINYINT"/>
+      <result column="gmt_create" property="gmtCreate" javaType="java.util.Date"
+        jdbcType="TIMESTAMP"/>
+      <result column="gmt_modified" property="gmtModified" javaType="java.util.Date"
+        jdbcType="TIMESTAMP"/>
+      <collection property="teamSettlementModeList" column="id"
+        ofType="com.kaihei.esportingplus.resource.domain.entity.freeteam.TeamSettlementMode"
+        select="com.kaihei.esportingplus.resource.data.repository.teamtype.TeamSettlementModeRepository.selectByTeamTypeId" />
+  </resultMap>
+
+  <resultMap id="teamTypeSimple" type="com.kaihei.esportingplus.api.vo.freeteam.TeamTypeSimpleVO">
+      <id column="id" property="teamTypeId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+      <result column="game_id" property="gameId" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="category" property="category" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="status" property="status" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+      <result column="order_index" property="orderIndex" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+      <result column="baoji_identity_id" property="baojiIdentityId" javaType="java.lang.Integer"
+        jdbcType="INTEGER"/>
+
+      <!--<association property="game" javaType="com.kaihei.esportingplus.api.vo.DictBaseVO"
+        fetchType="eager" column="game_id"
+        select="com.kaihei.esportingplus.resource.data.repository.DictionaryMapper.selectDictById">
+      </association>-->
+  </resultMap>
+
+  <sql id="team_type_columns">
+    id, name, category, game_id, play_mode_id, baoji_identity_id,
+    order_index, max_position_count, status, gmt_create, gmt_modified
+  </sql>
+
+  <select id="selectByTeamTypeId" resultMap="BaseResultMap">
+    SELECT <include refid="team_type_columns"/>
+    FROM team_type
+    WHERE id = #{teamTypeId}
+  </select>
+
+  <select id="selectByStatus" resultMap="BaseResultMap">
+    SELECT
+    <include refid="team_type_columns"/>
+    FROM team_type
+    WHERE status = #{status}
+    <if test="category != null">
+      AND category = #{category}
+    </if>
+    ORDER BY order_index ASC
+  </select>
+
+  <select id="selectTeamTypeList" resultMap="teamTypeSimple">
+    SELECT
+    id, name, category, game_id, baoji_identity_id, status, order_index
+    FROM team_type
+    WHERE 1=1
+    <if test="status != null">
+      AND status = #{status}
+    </if>
+    <if test="category != null">
+      AND category = #{category}
+    </if>
+    ORDER BY order_index ASC
+  </select>
+
+  <select id="selectGameZone" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT game_zone_id
+    FROM team_type_related_game_zone
+    WHERE team_type_id = #{teamTypeId}
+  </select>
+
+  <insert id="insertGameZone">
+    INSERT INTO team_type_related_game_zone
+    (team_type_id, game_zone_id)
+    VALUES
+    <foreach collection="gameZoneIdList" item="gameZoneId" separator=",">
+      (
+      #{teamTypeId},
+      #{gameZoneId}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteGameZone" parameterType="java.lang.Integer">
+    DELETE FROM team_type_related_game_zone
+    WHERE team_type_id = #{teamTypeId}
+  </delete>
+
+  <select id="selectGameDan" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    SELECT game_dan_id
+    FROM team_type_related_game_dan
+    WHERE team_type_id = #{teamTypeId}
+  </select>
+  <select id="selectBySettlememtTypeId"
+    parameterType="java.lang.Integer"
+    resultType="com.kaihei.esportingplus.resource.domain.dto.TeamTypeIdNameGameIdDTO">
+    select a.id freeTeamTypeId,a.name,a.game_id gameId
+    from team_type a
+           left join team_settlement_mode b on a.id = b.team_type_id
+    where b.settlement_type_id = #{settlementTypeId}
+  </select>
+
+  <insert id="insertGameDan">
+    INSERT INTO team_type_related_game_dan
+    (team_type_id, game_dan_id)
+    VALUES
+    <foreach collection="gameDanIdList" item="gameDanId" separator=",">
+      (
+      #{teamTypeId},
+      #{gameDanId}
+      )
+    </foreach>
+  </insert>
+
+  <delete id="deleteGameDan" parameterType="java.lang.Integer">
+    DELETE FROM team_type_related_game_dan
+    WHERE team_type_id = #{teamTypeId}
+  </delete>
+
+</mapper>

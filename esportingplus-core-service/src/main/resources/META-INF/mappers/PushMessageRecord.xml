@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.core.data.repository.PushMessageRecordRepository">
+    <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.core.domain.entity.PushMessageRecord">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="tags" jdbcType="VARCHAR" property="tags"/>
+        <result column="platforms" jdbcType="VARCHAR" property="platforms"/>
+        <result column="send_times" jdbcType="INTEGER" property="sendTimes"/>
+        <result column="send_channels" jdbcType="VARCHAR" property="sendChannels"/>
+        <result column="follow_action" jdbcType="TINYINT" property="followAction"/>
+        <result column="url" jdbcType="VARCHAR" property="url"/>
+        <result column="push_mode" jdbcType="TINYINT" property="pushMode"/>
+        <result column="push_type" jdbcType="TINYINT" property="pushType"/>
+        <result column="push_form" jdbcType="TINYINT" property="pushForm"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="image_uri" jdbcType="VARCHAR" property="imageUri"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="send_number" jdbcType="INTEGER" property="sendNumber"/>
+        <result column="success_number" jdbcType="INTEGER" property="successNumber"/>
+        <result column="click_number" jdbcType="INTEGER" property="clickNumber"/>
+        <result column="operator" jdbcType="VARCHAR" property="operator"/>
+        <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+
+    </resultMap>
+
+    <sql id="BASE_Column_Sql">
+        id,tags,platforms,send_times,send_channels,follow_action,url,push_mode,push_type,push_form,title,image_uri,content,send_number,
+        success_number,click_number,operator,gmt_create,gmt_modified
+  </sql>
+    <select id="selectById" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from push_message_record where id = #{id}
+    </select>
+
+    <insert id="insertRecord" parameterType="com.kaihei.esportingplus.core.domain.entity.PushMessageRecord" useGeneratedKeys="true" keyProperty="id">
+       INSERT INTO push_message_record
+       (tags,platforms,send_times,send_channels,follow_action,url,push_mode,push_type,push_form,title,image_uri,content,operator,gmt_create) VALUES
+       (#{tags},#{platforms},#{sendTimes},#{sendChannels},#{followAction},#{url},#{pushMode},#{pushType},#{pushForm},#{title},#{imageUri},
+       #{content},#{operator},now())
+    </insert>
+
+
+    <select id="selectRecords" resultMap="BaseResultMap">
+        select
+        <include refid="BASE_Column_Sql"/>
+        from push_message_record
+        order by gmt_create
+    </select>
+</mapper>

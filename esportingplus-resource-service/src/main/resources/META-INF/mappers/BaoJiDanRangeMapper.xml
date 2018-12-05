@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.BaojiDanRangeRepository">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.BaojiDanRange">
+    <!--
+      WARNING - @mbg.generated
+    -->
+      <result column="id" property="baojiDanRangeId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="game_id" property="gameId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="baoji_level" property="baojiLevel" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="lower_dan_id" property="lowerDanId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="upper_dan_id" property="upperDanId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <result column="gmt_create" property="gmtCreate" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <result column="gmt_modified" property="gmtModified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <select id="selectBaojiDanRangeList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+      SELECT  id, game_id, baoji_level,
+              lower_dan_id, upper_dan_id, gmt_create, gmt_modified
+      FROM baoji_dan_range
+      <if test="gameId != null">
+        WHERE game_id = #{gameId}
+      </if>
+      ORDER BY game_id DESC
+  </select>
+
+  <select id="selectByGameAndBaojiLevel" resultMap="BaseResultMap">
+      SELECT  id, game_id, baoji_level,
+              lower_dan_id, upper_dan_id, gmt_create, gmt_modified
+      FROM baoji_dan_range
+      WHERE game_id = #{gameId}
+      AND baoji_level = #{baojiLevel}
+  </select>
+
+</mapper>

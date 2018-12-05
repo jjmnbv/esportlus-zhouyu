@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.trade.data.repository.OrderCouponRepository">
+
+  <insert id="insertOrderCoupon" parameterType="java.util.List">
+      insert into trade_order_coupon(coupon_id,order_id,gmt_create,gmt_modified)
+      values
+      <foreach collection="list" item="item" index="index"  separator=";">
+          (#{item.couponId},#{item.orderId},now(),now())
+      </foreach>
+  </insert>
+  <select id="selectByOrderCouponByOrderId"
+    resultType="com.kaihei.esportingplus.trade.domain.entity.OrderCoupon">
+    select id id,
+    coupon_id couponId,
+    order_id orderId,
+    gmt_create gmtCreate,
+    gmt_modified gmtModified
+    from trade_order_coupon where order_id = #{orderId}
+  </select>
+
+</mapper>

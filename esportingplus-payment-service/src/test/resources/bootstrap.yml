@@ -1,0 +1,147 @@
+# sharding-jdbc
+sharding:
+  jdbc:
+    datasource:
+      platform: org.hibernate.dialect.H2Dialect
+      names: esportingplus_payment
+      esportingplus_payment:
+        type: com.alibaba.druid.pool.DruidDataSource
+#        driver: org.h2.Driver
+#        url: jdbc:h2:mem:esportingplus_payment;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL;
+#        username: sa
+#        password:
+        driver: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/esportingplus_payment?useUnicode=true&useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
+        username: root
+        password: root
+        validationQuery: SELECT 1
+        testWhileIdle: true
+        testOnBorrow: false
+        druid:
+          web-stat-filter:
+            enabled: false
+      initialize: false
+    config:
+      sharding:
+        tables:
+          external_trade_bill:
+            actual-data-nodes: esportingplus_payment.external_trade_bill_20$->{17..20}_$->{0..1} #由数据源名 + 表名组成，以小数点分隔。
+            table-strategy: #分表策略
+              standard:
+                sharding-column: create_date #分片列名称
+                precise-algorithm-class-name: com.kaihei.esportingplus.payment.config.sharding.DatePreciseShardingAlgorithm #精确分片算法类名称，用于=和IN
+                range-algorithm-class-name: com.kaihei.esportingplus.payment.config.sharding.DateRangeShardingAlgorithm #范围分片算法类名称，用于BETWEEN，可选
+        props:
+          sql:
+            show: true
+          executor:
+            size: 8 #工作线程数量，默认值: CPU核数
+        default-data-source-name: esportingplus_payment #未配置分片规则的表将通过默认数据源定位
+
+spring:
+  jpa:
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  rocketmq:
+    name-server-address: 127.0.0.1:9876
+    producer-group: payment_group_test
+  application:
+    name: esportingplus-payment-service
+  cloud:
+    config:
+      enabled: false
+      fail-fast: true
+      profile: dev
+      label: dev
+      username: ${security.user.name}
+      password: ${security.user.password}
+      uri: http://127.0.0.1:8888
+  #  encrypt:
+  #    private-key: MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAJBPl+NVApdSfzV6T8QsDb3Qh85Xy3lFfs+Lod6TZgUgXgLl1DZJmaoB/TlrV6X42hY727mvBbR9rqe/0eXNCKPgAWxFPWjoUpWayAOi7uf9sAWs4M5HiuzzJDx47GjUJ1groSkxNQ1GWOFmFyrYnKyzr3NofB5jHLeu4zyVrZ77AgMBAAECgYEAhXz6lNC3+t3WydMAIghWFbTlSpuvndgI+1bAPrC9+BP+olOSPz1JpRb987U1eFN++H4aO+KINnLjskwfjqBgUjpzxvu/Yu80uOmnLk3vpLFSqUmozeytSX4691MjxtElRpE7KO3nSKOFsrDB1DJfF6DswCLPidFyxDvhWKOwCgECQQDtj7FxAj83RfIidwTgHcp8+O+WGHyaiVOnm7V5hGEutRwMq61ivCvbeswOM+BC9k1KGigtdWdC3km8XJoKOJeBAkEAm4MHdadZtA65Ypw/Sl0Gfg63lFH2L1Pz7+uFrgBVMQd7PhdZu1VJqQkUdokPodcUWs9WVIaBeWUhHzBgQgbUewJAIUW96YESD5DJYBBha25gvO40yEX3tcFEKTaCzVlAL0WIfzHQYALQ9bWWPOsBHv/WRWmydON7qf7uPuaNYJ8agQJBAIBwiAi0X3JHdvXq9psEmggjP5xQ1XPhcugFLjO4MqR7+V4fCw2eM2hZB32fVjnk2frmo/bL4MPSsrh/zAC8g2ECQElLzQhn3wd6AlhVVYDVcHpXM87eVk/NdH95SGXGeWuYRgSeUN2k2i3+Sl0IGBJaCPk6K5bVjWPTnhjPZZTHLoI=
+  #    charset: UTF-8
+  #    debug: false
+  datasource:
+    schema:
+    data:
+    external:
+      type: com.alibaba.druid.pool.DruidDataSource
+#      driver: org.h2.Driver
+#      url: jdbc:h2:mem:esportingplus_payment;DB_CLOSE_ON_EXIT=FALSE;MODE=MYSQL;
+#      username: sa
+#      password:
+      driver: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/esportingplus_payment?useUnicode=true&useSSL=false&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowPublicKeyRetrieval=true
+      username: root
+      password: root
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+  data:
+    mongodb:
+      database: esportingplus_payment
+      host: 120.77.146.135
+      port: 27017
+      username: admin
+      password: admin
+
+
+security:
+  user:
+    name: admin
+    password: ${GAMINGTEAM_SERVICE_PASSWORD:admin}
+
+eureka:
+  client:
+    enabled: false
+    register-with-eureka: false
+    fetch-registry: false
+redis:
+  cluster-model: single
+  nodes: ["\"120.79.211.158:6380\""]
+  password: ""
+  database: 1
+
+snowflake:
+  datacenter:
+    id: 10
+
+swagger2:
+  enable: true
+
+app:
+  rocketmq:
+    transaction-producer-group: payment_transaction_group_test
+  apple:
+    pay:
+      url:
+        sandbox: https://sandbox.itunes.apple.com/verifyReceipt #验证票据-沙盒环境
+        verify: https://buy.itunes.apple.com/verifyReceipt
+  product:
+    query: https://dev.kaiheikeji.com/v3/apple/products/
+python:
+  order:
+    complain:
+      url: https://dev.kaiheikeji.com/v3/user/transfer_black/exists/
+
+#threadpool
+thread:
+  corePoolSize: 300
+  maximumPoolSize: 1000
+  keepAliveTime: 20
+  workQueueSize: 5000
+
+logging:
+  level:
+    RocketmqRemoting: error
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+info:
+  version: 1.0.0
+  formatter-version: v1.0.0
+  app:
+    name: esportingplus core service
+    description: Payment Service with RESTful API
+  build:
+    timestamp: 2018-08-08

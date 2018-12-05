@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kaihei.esportingplus.resource.data.repository.FreeTeamChickenPointExchangeBaojiMapper">
+  <resultMap id="BaseResultMap" type="com.kaihei.esportingplus.resource.domain.entity.freeteam.FreeTeamChickenPointExchangeBaoji">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <constructor>
+      <idArg column="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="use_chikenpoint" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="exchange_rate_chikenpoint" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="exchange_rate_baoji_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="exchange_start_week_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="exchange_start_week_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="exchange_starttime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="exchange_end_week_id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="exchange_end_week_value" javaType="java.lang.String" jdbcType="VARCHAR" />
+      <arg column="exchange_endtime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="single_lowest_point" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="single_highest_point" javaType="java.lang.Integer" jdbcType="INTEGER" />
+      <arg column="gmt_create" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+      <arg column="gmt_modified" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    </constructor>
+  </resultMap>
+</mapper>

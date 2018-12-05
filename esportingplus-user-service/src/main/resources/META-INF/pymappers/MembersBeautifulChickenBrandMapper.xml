@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.kaihei.esportingplus.user.data.pyrepository.MembersBeautifulChickenBrandRepository">
+  <resultMap id="BaseResultMap"
+    type="com.kaihei.esportingplus.user.domain.entity.MembersBeautifulChickenBrand">
+    <id column="id" jdbcType="INTEGER" property="id"/>
+    <result column="chicken_id" jdbcType="VARCHAR" property="chickenId"/>
+    <result column="level" jdbcType="INTEGER" property="level"/>
+    <result column="status" jdbcType="INTEGER" property="status"/>
+  </resultMap>
+
+  <select id="selectAllChickenIds" resultType="java.lang.String">
+    select  chicken_id from members_beautifulchickenbrand limit #{offset},#{limit}
+  </select>
+
+</mapper>
